@@ -3,12 +3,9 @@
 namespace App\Rules;
 
 use App\Models\GponEquipaments;
-use App\Traits\ApiResponser;
 
 class EquipamentsRules
 {
-    use ApiResponser;
-
     /**
      * Executando validação.
      *
@@ -17,10 +14,12 @@ class EquipamentsRules
      */
     public function validate(string $value): array
     {
-        if ($this->ifExistEquipament($value)) return ["message" => "O equipamento '$value' já existe.", "status" => false];
+        if ($this->ifExistEquipament($value)) {
+            return ["message" => "O equipamento '$value' já existe.", "status" => false];
+        }
+
         return ["status" => true];
     }
-
 
     /**
      * Verifica se o equipamento já existe antes de ser cadastrado.
@@ -30,12 +29,12 @@ class EquipamentsRules
      */
     protected function ifExistEquipament($name)
     {
-        $equipamet = GponEquipaments::where('name', $name)->first('id');
+        $equipamet = GponEquipaments::where('name', $name)->first();
 
-        if ($equipamet) {
-            return true;
+        if (!$equipamet) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
