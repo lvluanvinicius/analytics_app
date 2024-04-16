@@ -7,14 +7,14 @@ use App\Zabbix\Models\Hosts;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-// 3|tcsCxBVzcriLRftMgdUn1K17rumr2MWhzAIvfEZW
-
-class PopsController extends Controller
+class InterconnectionController extends Controller
 {
     use \App\Traits\Api\ApiResponse;
 
     /**
-     * Recupera dados de pops no zabbix.
+     * Recupera dados para mapa de interligação.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
      *
      * @param Request $request
      * @return JsonResponse
@@ -57,14 +57,12 @@ class PopsController extends Controller
                 "method" => "host.get",
                 "id" => 1,
                 "params" => [
-                    "output" => ["name"],
-                    "groupids" => [$groupId],
-                    "filter" => [
-                        "groupids" => [$groupId],
-                        'status' => 0,
-                    ],
-                    "selectItems" => ["itemid", "lastvalue"],
-                    "selectInventory" => ["location"],
+                    "output" => ["host", "name"],
+                    "groupids" => explode(',', $groupId),
+                    "selectItems" => ["lastvalue", "name"],
+                    "selectInventory" => ["location_lat", "location_lon", "notes", "location", "contact"],
+                    "limit" => 0,
+                    "offset" => 0,
                 ],
             ]);
 
@@ -72,13 +70,14 @@ class PopsController extends Controller
             $newHosts = [];
             foreach ($zabbixData['result'] as $zbxData) {
                 array_push($newHosts, [
-                    "host" => $zbxData['name'],
-                    "location" => $zbxData['inventory']['location'],
-                    "lastvalue" => $zbxData["items"][0]['lastvalue'],
+                    "name" => $zbxData['name'],
+                    "host" => $zbxData['host'],
+                    "location" => $zbxData['inventory'],
+                    "lastvalue" => $zbxData["items"],
                 ]);
             }
 
-            return $this->successResponse($newHosts, 'Pops recuperados com sucesso.');
+            return $this->successResponse($newHosts, 'Hosts recuperados com sucesso.');
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
         }

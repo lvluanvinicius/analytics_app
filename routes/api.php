@@ -3,6 +3,8 @@
 use App\Http\Controllers\Analytics\AuthController;
 use App\Http\Controllers\Analytics\EquipamentController;
 use App\Http\Controllers\Analytics\GponOnusController;
+use App\Http\Controllers\Analytics\InterconnectionController;
+use App\Http\Controllers\Analytics\PopsController;
 use App\Http\Controllers\Analytics\PortsController;
 use App\Http\Controllers\Analytics\UserController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +33,14 @@ Route::prefix('analytics')->group(function () {
             Route::get('/onus-per-port', [GponOnusController::class, 'onusPerPorts'])->name('onus.per.ports');
             // Route::get('/zbx-get-dates', [GponGetDatesController::class, 'zbxGetDates'])->name('zbx.get.dates');
             // Route::get('/onus-per-port/before-date', [GponOnusPerPortsController::class, 'onusPerPortsBeforeDate'])->name('onus.per.ports');
+        });
+
+        Route::prefix('pops')->as('pops.')->group(function () {
+            Route::get('/', [PopsController::class, 'index'])->name('index');
+        });
+
+        Route::prefix('interconnection')->as('interconnection.')->group(function () {
+            Route::get('/', [InterconnectionController::class, 'index'])->name('index');
         });
 
     });
