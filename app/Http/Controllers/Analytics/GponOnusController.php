@@ -42,7 +42,7 @@ class GponOnusController extends Controller
     {
         try {
             return $this->successResponse($this->gponOnusRepository->getOnus());
-        } catch (\App\Exceptions\Analytics\AuthException $error) {
+        } catch (GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
@@ -97,8 +97,8 @@ class GponOnusController extends Controller
                 }
             }
 
-            return $this->successResponse($newOnusNames);
-        } catch (\App\Exceptions\Analytics\GponOnusException $error) {
+            return $this->successResponse($newOnusNames, 'Dados recuperados com sucesso.');
+        } catch (GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
@@ -159,8 +159,8 @@ class GponOnusController extends Controller
                 ->where('collection_date', '<=', $timestampTo->format('Y-m-d H:i:s'))
                 ->get();
 
-            return $this->successResponse($onusData);
-        } catch (\App\Exceptions\Analytics\GponOnusException $error) {
+            return $this->successResponse($onusData, 'Dados recuperados com sucesso.');
+        } catch (GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
@@ -221,8 +221,57 @@ class GponOnusController extends Controller
                 }
             }
 
-            return $this->successResponse($newOnusDates);
-        } catch (\App\Exceptions\Analytics\GponOnusException $error) {
+            return $this->successResponse($newOnusDates, 'Dados recuperados com sucesso.');
+        } catch (GponOnusException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Recupera os dados de onus por porta.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return JsonResponse
+     */
+    public function onusPerPorts(\Illuminate\Http\Request $request): JsonResponse
+    {
+        try {
+            // Verificando se o endereço do zabbix foi informado.
+            if (!$request->has('collection_date')) {
+                throw new GponOnusException("Por favor, o parâmetro 'collection_date' é obrigatório.");
+            }
+
+            // Verificando se o parâmetro equipament foi informado.
+            if (!$request->has('equipament')) {
+                throw new GponOnusException("O parâmetro 'equipament' deve ser informado.");
+            }
+
+            // Verificando se o parâmetro port foi informado.
+            if (!$request->has('port')) {
+                throw new GponOnusException("O parâmetro 'port' deve ser informado.");
+            }
+
+            $params = $request->query();
+
+            // Recuperando timerange
+
+            $equipament = $params["equipament"];
+            $port = $params["port"];
+            $collection_date = $params["collection_date"];
+
+            $onusData = \App\Models\GponOnus::where('device', '=', $equipament)
+                ->where('port', '=', $port)
+                ->where('collection_date', '=', $collection_date)
+                ->orderBy('rx', 'asc')
+                ->get(['onuid', 'serial_number', 'name', 'tx', 'rx', 'device', 'port']);
+
+            return $this->successResponse($onusData, 'Dados recuperados com sucesso.');
+
+        } catch (GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
