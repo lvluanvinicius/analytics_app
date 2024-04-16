@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Analytics;
 
 use App\Exceptions\Analytics\GponOnusException;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class GponOnusController extends Controller
 {
@@ -12,12 +13,16 @@ class GponOnusController extends Controller
     /**
      * Guarda repositorio de gponons.
      *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      * @var \App\Http\Interfaces\GponOnusRepositoryInterface
      */
     protected \App\Http\Interfaces\GponOnusRepositoryInterface $gponOnusRepository;
 
     /**
      * Iniciando construtor.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
      *
      * @var \App\Http\Interfaces\GponOnusRepositoryInterface
      */
@@ -26,7 +31,14 @@ class GponOnusController extends Controller
         $this->gponOnusRepository = $gponOnusRepository;
     }
 
-    public function index()
+    /**
+     * Recupera dados de ONUs.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
     {
         try {
             return $this->successResponse($this->gponOnusRepository->getOnus());
@@ -40,9 +52,11 @@ class GponOnusController extends Controller
     /**
      * Recupera nomes de onus em coletas.
      *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      * @param \Illuminate\Http\Request $request
      */
-    public function names(\Illuminate\Http\Request $request)
+    public function names(\Illuminate\Http\Request $request): JsonResponse
     {
         try {
             // Verificando se o parâmetro equipament foi informado.
@@ -59,23 +73,32 @@ class GponOnusController extends Controller
             $params = $request->query();
 
             // Carregando times padrão para não pesar a consulta.
-            $time_from = date('Y-m-d H:i', strtotime('-3 day'));
+            $time_from = date('Y-m-d H:i', strtotime("-" . config('analytics.onus.period_ago_names') . " day"));
             $time_till = date('Y-m-d H:i');
+
             // Recuperando parametros obrigatórios.
             $equipament = $params['equipament'];
             $port = $params['port'];
+
             // Realizando consulta e recuperando nomes.
             $onus = \App\Models\GponOnus::where('device', $equipament)->where('port', $port)
                 ->where('collection_date', '>=', $time_from)
                 ->where('collection_date', '<=', $time_till)->get(['name']);
-            // ->where('port', $port)
-            // ->where('collection_date', '>=', $time_from)
-            // ->where('collection_date', '<=', $time_till)
-            // ->orderBy('name', 'asc')
-            // ->distinct(['name'])->pluck('name');
 
-            return $this->successResponse($onus);
-        } catch (\App\Exceptions\Analytics\AuthException $error) {
+            // Novo array para armazenar nomes.
+            $newOnusNames = [];
+
+            // Removendo nomes duplicados.
+            foreach ($onus as $onu) {
+                if (in_array($onu->name, $newOnusNames)) {
+                    continue;
+                } else {
+                    array_push($newOnusNames, $onu->name);
+                }
+            }
+
+            return $this->successResponse($newOnusNames);
+        } catch (\App\Exceptions\Analytics\GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
@@ -85,9 +108,13 @@ class GponOnusController extends Controller
     /**
      * Recupera valores de consultas de ONUs.
      *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      * @param \Illuminate\Http\Request $request
+     *
+     * @return JsonResponse
      */
-    public function onusDatasPerPeriod(\Illuminate\Http\Request $request)
+    public function onusDatasPerPeriod(\Illuminate\Http\Request $request): JsonResponse
     {
         try {
             // Verificando se o endereço do zabbix foi informado.
@@ -133,7 +160,69 @@ class GponOnusController extends Controller
                 ->get();
 
             return $this->successResponse($onusData);
-        } catch (\App\Exceptions\Analytics\AuthException $error) {
+        } catch (\App\Exceptions\Analytics\GponOnusException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Recupera as datas de coleta.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return JsonResponse
+     */
+    public function getDates(\Illuminate\Http\Request $request): JsonResponse
+    {
+        try {
+            // Verificando se o endereço do zabbix foi informado.
+            if (!$request->has('timeFrom') || !$request->has('timeTo')) {
+                throw new GponOnusException("Por favor, os parâmetros 'timeFrom' e 'timeTo' são obrigatórios.");
+            }
+
+            // Verificando se o parâmetro equipament foi informado.
+            if (!$request->has('equipament')) {
+                throw new GponOnusException("O parâmetro 'equipament' deve ser informado.");
+            }
+
+            // Verificando se o parâmetro port foi informado.
+            if (!$request->has('port')) {
+                throw new GponOnusException("O parâmetro 'port' deve ser informado.");
+            }
+
+            $params = $request->query();
+
+            // Recuperando timerange
+            $timeFromString = str_replace('_', ':', $params['timeFrom']);
+            $timeToString = str_replace('_', ':', $params['timeTo']);
+
+            $equipament = $params["equipament"];
+            $port = $params["port"];
+
+            $onusData = \App\Models\GponOnus::where('device', '=', $equipament)
+                ->where('port', '=', $port)
+                ->where('collection_date', '>=', $timeFromString)
+                ->where('collection_date', '<=', $timeToString)
+                ->orderBy('collection_date', 'desc')
+                ->get();
+
+            // Novo array para armazenar as datas.
+            $newOnusDates = [];
+
+            // Removendo datas duplicados.
+            foreach ($onusData as $onudata) {
+                if (in_array($onudata->collection_date, $newOnusDates)) {
+                    continue;
+                } else {
+                    array_push($newOnusDates, $onudata->collection_date);
+                }
+            }
+
+            return $this->successResponse($newOnusDates);
+        } catch (\App\Exceptions\Analytics\GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);

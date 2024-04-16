@@ -16,12 +16,17 @@ class EquipamentController extends Controller
     /**
      * Guarda o modelo de equipamentos.
      *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      * @var \App\Http\Interfaces\GponEquipamentsRepositoryInterface
      */
     protected \App\Http\Interfaces\GponEquipamentsRepositoryInterface $gponEquipamentsRepository;
 
     /**
      * Inicia o construtor da classe.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      *
      * @param \App\Http\Interfaces\GponEquipamentsRepositoryInterface $gponEquipamentsRepository
      */

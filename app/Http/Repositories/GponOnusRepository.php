@@ -15,6 +15,6 @@ class GponOnusRepository implements \App\Http\Interfaces\GponOnusRepositoryInter
 
     public function getOnus()
     {
-        return \App\Models\GponOnus::orderByDesc('collection_date')->first();
+        return \App\Models\GponOnus::orderByDesc('collection_date')->get();
     }
 }
