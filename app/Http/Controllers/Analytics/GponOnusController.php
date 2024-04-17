@@ -255,10 +255,10 @@ class GponOnusController extends Controller
                 throw new GponOnusException("O parâmetro 'port' deve ser informado.");
             }
 
+            // Buscando dados da requisição.
             $params = $request->query();
 
-            // Recuperando timerange
-
+            // Recuperando dados dos parametros da requisição.
             $equipament = $params["equipament"];
             $port = $params["port"];
             $collection_date = $params["collection_date"];
@@ -271,6 +271,63 @@ class GponOnusController extends Controller
 
             return $this->successResponse($onusData, 'Dados recuperados com sucesso.');
 
+        } catch (GponOnusException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function zbxReportEquipament(
+        \App\Http\Interfaces\GponEquipamentsRepositoryInterface $gponEquipamentsRepository,
+        \App\Http\Interfaces\GponPortsRepositoryInterface $gponPortsRepository,
+        \App\Models\GponOnus $onus,
+        string $equipament): JsonResponse {
+        try {
+            // Valida se o parametro 'equipament' foi informado.
+            if (!$equipament) {
+                throw new GponOnusException("O parâmetro 'equipament' deve ser informado.");
+            }
+
+            // Recuperando equipamento.
+            $equipament = $gponEquipamentsRepository->getEquipamentPerName($equipament);
+
+            // Recuperando portas.
+            $gports = $gponPortsRepository->getPortsPerEquipamentId($equipament->_id);
+
+            // Array auxiliar de dbm por porta.
+            $onusDataPerPort['equipament'] = $equipament;
+            // $onusDataPerPort['onus_per_port'] = [];
+
+            $timeFromString = (new \DateTime())->modify('-1 hour')->format('Y-m-d H:i:s'); // (new \DateTime())->format('Y-m-d H:i:s');
+            $timeToString = (new \DateTime())->format('Y-m-d H:i:s');
+
+            $collections = $onus->where('device', $equipament->name)
+                ->where('collection_date', '>=', $timeFromString)
+                ->where('collection_date', '<=', $timeToString)
+                ->get();
+
+            // Recuperando dados de onus de cada porta.
+            // foreach ($gports as $gport) {
+            //     // Separando coletas por porta.
+            //     foreach ($collections as $collect) {
+
+            //         // Valida se a porta  já existe como identificador.
+            //         if (!array_key_exists($gport->port, $onusDataPerPort['onus_per_port'])) {
+            //             $onusDataPerPort['onus_per_port'][$gport->port] = [];
+            //         }
+
+            //         // Valida se a porta é igual a porta da coleta.
+            //         if ($gport->port === $collect->port) {
+            //             // Inserindo coleta na porta.
+            //             array_push($onusDataPerPort['onus_per_port'][$gport->port], $collect);
+            //         }
+            //     }
+            // }
+
+            $onusDataPerPort['collections'] = $collections;
+
+            return $this->successResponse($onusDataPerPort, 'Dados recuperados com sucesso.');
         } catch (GponOnusException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
