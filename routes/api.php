@@ -9,7 +9,7 @@ use App\Http\Controllers\Analytics\PortsController;
 use App\Http\Controllers\Analytics\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('analytics')->group(function () {
+Route::middleware('throttle:1000,1')->prefix('analytics')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('user/create', [UserController::class, 'register']);
 
