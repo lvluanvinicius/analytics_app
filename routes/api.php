@@ -6,6 +6,7 @@ use App\Http\Controllers\Analytics\GponOnusController;
 use App\Http\Controllers\Analytics\InterconnectionController;
 use App\Http\Controllers\Analytics\PopsController;
 use App\Http\Controllers\Analytics\PortsController;
+use App\Http\Controllers\Analytics\ProxmoxController;
 use App\Http\Controllers\Analytics\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,10 @@ Route::middleware('throttle:1000,1')->prefix('analytics')->group(function () {
 
         Route::prefix('interconnection')->as('interconnection.')->group(function () {
             Route::get('/', [InterconnectionController::class, 'index'])->name('index');
+        });
+
+        Route::prefix('proxmox')->as('proxmox.')->group(function () {
+            Route::post('/request-all', [ProxmoxController::class, 'requestApp'])->name('index');
         });
 
     });
