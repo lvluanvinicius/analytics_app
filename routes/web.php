@@ -1,3 +1,5 @@
 <?php
 
-// Route::view("minhas-faturas/{path?}", 'components.my-invoices.maintenance')->where('path', '.*')->name("react.website.my-invoices");
+use Illuminate\Support\Facades\Route;
+
+Route::view("app/{path?}", 'components.frontend')->where('path', '.*')->name("react.website.my-invoices");
