@@ -4,9 +4,9 @@ import { ModeToggle } from "../themes/mode-toggle";
 
 export function Sidebar() {
     return (
-        <aside className="flex h-[100vh] w-[70px] flex-col shadow-md bg-gray-100 dark:bg-black/70 shadow-black/25 dark:shadow-gray-50">
+        <aside className="flex h-[100vh] w-[70px] flex-col bg-gray-100 shadow-md shadow-black/25 dark:bg-black/70 dark:shadow-gray-50">
             <div className="flex h-[70px] w-full items-center justify-center">
-                <Link to={''}>
+                <Link to={""}>
                     <Webhook size={32} className="dark:text-green-500" />
                 </Link>
             </div>

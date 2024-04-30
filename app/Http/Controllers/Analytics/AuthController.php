@@ -46,13 +46,18 @@ class AuthController extends Controller
             // Recuperando usuário para autenticação.
             $user = $this->userRepository->findByUsername($requestData['username']);
 
+            // Valida se o usuário foi localizado.
+            if (!$user) {
+                throw new \App\Exceptions\Analytics\AuthException("Usuário e/ou senha estão incorretos.");
+            }
+
             $user->tokens()->delete(); // Limpa os tokens (caso existam)
 
             // Validando dados.
             if (!$user || !password_verify($request->password, $user->password)) {
                 return response()->json([
-                    'message' => 'Credenciais inválidas',
-                ], 401);
+                    'message' => 'Usuário e/ou senha estão incorretos.',
+                ], 200);
             }
 
             // Criando novo token.

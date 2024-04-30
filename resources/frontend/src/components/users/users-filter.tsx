@@ -5,55 +5,62 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const searchFilter = z.object({
-    search: z.string().optional()
-})
+    search: z.string().optional(),
+});
 
-type SearchFilterType = z.infer<typeof searchFilter>
+type SearchFilterType = z.infer<typeof searchFilter>;
 
 export function UsersFilter() {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    // Recuperando valor do paramaetro de 'search'; 
-    const search = searchParams.get('search') ?? ""
+    // Recuperando valor do paramaetro de 'search';
+    const search = searchParams.get("search") ?? "";
 
-    const {handleSubmit, register, reset} = useForm<SearchFilterType>({
+    const { handleSubmit, register, reset } = useForm<SearchFilterType>({
         values: {
-            search: search??""
-        }
-    })
+            search: search ?? "",
+        },
+    });
 
-    // Adicionando/removendo parametro search das query params. 
+    // Adicionando/removendo parametro search das query params.
     function handleSearchString(data: SearchFilterType) {
-        setSearchParams(state => {
-            // Valida se há um valor em search e adiciona dentro dos parametros. 
+        setSearchParams((state) => {
+            // Valida se há um valor em search e adiciona dentro dos parametros.
             if (data.search) {
-                state.set('search', data.search)
+                state.set("search", data.search);
             } else {
-                // Remove se não for informado nenhum valor. 
-                state.delete('search')
+                // Remove se não for informado nenhum valor.
+                state.delete("search");
             }
 
-            return state
-        })
+            return state;
+        });
     }
 
     function clearFilter() {
-        setSearchParams(state => {
-            state.delete('search')
-            state.delete('page')
+        setSearchParams((state) => {
+            state.delete("search");
+            state.delete("page");
 
             reset({
-                search: ''
-            })
+                search: "",
+            });
 
-            return state
-        })
+            return state;
+        });
     }
 
     return (
         <div className="mb-2 w-full ">
-            <form className="flex w-full gap-2" onSubmit={handleSubmit(handleSearchString)}> 
-                <Input placeholder="Buscar usuário" className="flex-1" {...register('search')} />
+            <form
+                className="flex w-full gap-2"
+                onSubmit={handleSubmit(handleSearchString)}
+            >
+                <Input
+                    placeholder="Buscar usuário"
+                    className="flex-1"
+                    {...register("search")}
+                />
                 <Button variant="outline" type="submit">
                     Filtrar
                 </Button>

@@ -1,5 +1,12 @@
 import { Button } from "../ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "../ui/table";
 
 export function UsersTable() {
     return (
@@ -11,7 +18,9 @@ export function UsersTable() {
                     <TableHead className="border-b">E-mail</TableHead>
                     <TableHead className="border-b">Usuário</TableHead>
                     <TableHead className="border-b">Data de Criação</TableHead>
-                    <TableHead className="border-b">Data de Modificação</TableHead>
+                    <TableHead className="border-b">
+                        Data de Modificação
+                    </TableHead>
                     <TableHead className="border-b"></TableHead>
                 </TableRow>
             </TableHeader>
@@ -20,11 +29,15 @@ export function UsersTable() {
                     return (
                         <TableRow key={item}>
                             <TableCell className="border-b py-1">902</TableCell>
-                            <TableCell className="border-b py-1">Luan VP Santos</TableCell>
+                            <TableCell className="border-b py-1">
+                                Luan VP Santos
+                            </TableCell>
                             <TableCell className="border-b py-1">
                                 lvluansantos@gmail.com
                             </TableCell>
-                            <TableCell className="border-b py-1">lvluansantos</TableCell>
+                            <TableCell className="border-b py-1">
+                                lvluansantos
+                            </TableCell>
                             <TableCell className="border-b py-1">
                                 10/10/2022 as 14:32
                             </TableCell>
