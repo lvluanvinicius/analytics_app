@@ -8,11 +8,68 @@ class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
 
 {
     /**
-     * Create a new class instance.
+     * Guarda o moelo e usuário.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @var \App\Models\User
      */
-    public function __construct()
+    protected \App\Models\User $user;
+
+    /**
+     * Inicia o construtor.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     *
+     * @param \App\Models\User $user
+     */
+    public function __construct(\App\Models\User $user)
     {
-        //
+        $this->user = $user;
+    }
+
+    /**
+     * Efetua um fitro dos usuários ou retorna todos em paginação.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $search
+     * @param integer $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function users(string | null $search, int $perPage = 30): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        // Criando query de consulta.
+        $userQuery = $this->user->query();
+
+        // Ordenando valores por data de criação.
+        $userQuery->orderBy('created_at', 'desc');
+
+        // Validando valor de search.
+        if (!$search) {
+            return $userQuery->paginate($perPage);
+        }
+
+        // Efetuando filtro de string se houver.
+        $userQuery->where(function ($query) use ($search) {
+            // dd(!strpos('%', $search));
+            // Valida se não há nenhum porcentagem coringa e adiciona.
+
+            if (strpos($search, '%') === false) {
+                $search = "%{$search}%";
+            }
+
+            // Transformando string em minúsculas.
+            $search = strtolower($search);
+
+            // Adicionando filtros.
+            $query->orWhereRaw("LOWER(users.name) LIKE ?", [$search])
+                ->orWhereRaw("LOWER(users.email) LIKE ?", [$search])
+                ->orWhereRaw("LOWER(users.username) LIKE ?", [$search]);
+        });
+
+        // Retorna consulta com filtros.
+        return $userQuery->paginate($perPage);
     }
 
     /**

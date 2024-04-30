@@ -1,44 +1,45 @@
 import { Button } from "../ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 export function UsersTable() {
     return (
-        <table className="w-full border-collapse text-left">
-            <thead>
-                <tr>
-                    <th className="border-b">ID</th>
-                    <th className="border-b">Nome</th>
-                    <th className="border-b">E-mail</th>
-                    <th className="border-b">Usuário</th>
-                    <th className="border-b">Data de Criação</th>
-                    <th className="border-b">Data de Modificação</th>
-                    <th className="border-b"></th>
-                </tr>
-            </thead>
-            <tbody>
+        <Table className="w-full border-collapse text-left">
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="border-b">ID</TableHead>
+                    <TableHead className="border-b">Nome</TableHead>
+                    <TableHead className="border-b">E-mail</TableHead>
+                    <TableHead className="border-b">Usuário</TableHead>
+                    <TableHead className="border-b">Data de Criação</TableHead>
+                    <TableHead className="border-b">Data de Modificação</TableHead>
+                    <TableHead className="border-b"></TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
                 {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => {
                     return (
-                        <tr key={item}>
-                            <td className="border-b py-1">902</td>
-                            <td className="border-b py-1">Luan VP Santos</td>
-                            <td className="border-b py-1">
+                        <TableRow key={item}>
+                            <TableCell className="border-b py-1">902</TableCell>
+                            <TableCell className="border-b py-1">Luan VP Santos</TableCell>
+                            <TableCell className="border-b py-1">
                                 lvluansantos@gmail.com
-                            </td>
-                            <td className="border-b py-1">lvluansantos</td>
-                            <td className="border-b py-1">
+                            </TableCell>
+                            <TableCell className="border-b py-1">lvluansantos</TableCell>
+                            <TableCell className="border-b py-1">
                                 10/10/2022 as 14:32
-                            </td>
-                            <td className="border-b py-1">
+                            </TableCell>
+                            <TableCell className="border-b py-1">
                                 10/10/2022 as 14:32
-                            </td>
-                            <td className="border-b py-1">
+                            </TableCell>
+                            <TableCell className="border-b py-1">
                                 <Button variant={"outline"} className="h-8">
                                     Editar
                                 </Button>
-                            </td>
-                        </tr>
+                            </TableCell>
+                        </TableRow>
                     );
                 })}
-            </tbody>
-        </table>
+            </TableBody>
+        </Table>
     );
 }
