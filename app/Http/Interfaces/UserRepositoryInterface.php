@@ -11,4 +11,6 @@ interface UserRepositoryInterface
     public function create(array $details): User;
 
     public function users(string | null $search, int $perPage = 30): \Illuminate\Pagination\LengthAwarePaginator;
+
+    public function update(array $attr, string $userid): User;
 }

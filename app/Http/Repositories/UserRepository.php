@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories;
 
+use App\Exceptions\Analytics\UserException;
 use App\Models\User;
 
 class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
@@ -99,5 +100,79 @@ class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
         $attr['password'] = \Illuminate\Support\Facades\Hash::make($attr['password']);
 
         return User::create($attr);
+    }
+
+    /**
+     * Atualiza um registro e usuário.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param array $attr
+     * @param string $userid
+     * @return User
+     */
+    public function update(array $attr, string $userid): User
+    {
+        // Recuperando usuário para edição.
+        $user = $this->user->where('id', $userid)->first();
+
+        // Validando se o username já está em uso.
+        if ($this->validateExists($user->id, 'username', $attr['username'])) {
+            throw new UserException('O username informado já está em uso.');
+        }
+
+        // Validando se o email já está em uso.
+        if ($this->validateExists($user->id, 'email', null, $attr['email'])) {
+            throw new UserException('O email informado já está em uso.');
+        }
+
+        // Valida se a senha foi informada.
+        if ($attr['password']) {
+            // Assegure-se de que a senha seja adequadamente criptografada
+            $user->password = \Illuminate\Support\Facades\Hash::make($attr['password']);
+        }
+
+        // Atualiza os dados.
+        $user->name = $attr['name'];
+        $user->username = $attr['username'];
+        $user->email = $attr['email'];
+
+        // valida se o usuário foi atualizado corretamente.
+        if (!$user->save()) {
+            throw new UserException('Erro ao tentar atualizar o usuário.');
+        }
+
+        return $user;
+    }
+
+    /**
+     * Valida se o email ou o username já está em uso por outro registro que não seja o atualizado.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $userid
+     * @param string $name
+     * @param string $name
+     * @param string $name
+     */
+    public function validateExists(string $userid, string $type = 'username', string | null $username = null, string | null $email = null): bool
+    {
+        if ($type === 'username') {
+            if ($this->user->where('username', $username)->where('id', '!=', $userid)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
+        if ($type === 'email') {
+            if ($this->user->where('email', $email)->where('id', '!=', $userid)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
     }
 }

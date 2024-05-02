@@ -11,12 +11,16 @@ class UserController extends Controller
     /**
      * Guarda o respositório de usuários.
      *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      * @var \App\Http\Interfaces\UserRepositoryInterface
      */
     protected \App\Http\Interfaces\UserRepositoryInterface $userRepository;
 
     /**
      * Inicializa o controller.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
      *
      * @param \App\Http\Interfaces\UserRepositoryInterface $userRepository
      */
@@ -38,7 +42,7 @@ class UserController extends Controller
         try {
             // Recuperando dados da requisição.
             $search = $request->get('search') ?? null;
-            $perPage = $request->get('per_page') ?? 2;
+            $perPage = $request->get('per_page') ?? 20;
 
             // Recuperando usuários.
             $users = $this->userRepository->users($search, $perPage);
@@ -53,6 +57,8 @@ class UserController extends Controller
 
     /**
      * Registra um novo usuário.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
      *
      * @param \App\Http\Requests\Analytics\UserRegisterRequest $request A request validada para registrar um usuário.
      * @return \Illuminate\Http\JsonResponse Uma resposta JSON contendo os dados do usuário e um token.
@@ -70,6 +76,34 @@ class UserController extends Controller
                 'user' => $user,
                 'token' => $token,
             ], 'Usuário registrado com sucesso!');
+        } catch (\App\Exceptions\Analytics\UserException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Atualiza um usuário.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \App\Http\Requests\Analytics\UserUpdateRequest $request
+     * @param string $userid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(\App\Http\Requests\Analytics\UserUpdateRequest $request, string $userid): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // Carregando dados do usuário na requisição.
+            $user = $this->userRepository->update(
+                $request->only(['username', 'password', 'name', 'email']),
+                $userid
+            );
+
+            return $this->successResponse([
+                'user' => $user,
+            ], 'Usuário atualizado com sucesso!');
         } catch (\App\Exceptions\Analytics\UserException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {

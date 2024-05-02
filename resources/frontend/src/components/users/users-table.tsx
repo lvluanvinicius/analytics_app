@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { UserProps } from "@/services/queries/get-users";
 import {
     Table,
     TableBody,
@@ -7,8 +7,14 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
+import { dateExtFormatter } from "@/utils/formatter";
+import { UsersEdit } from "./users-edit";
 
-export function UsersTable() {
+interface UsersTableProps {
+    users: UserProps[];
+}
+
+export function UsersTable({ users }: UsersTableProps) {
     return (
         <Table className="w-full border-collapse text-left">
             <TableHeader>
@@ -25,29 +31,29 @@ export function UsersTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => {
+                {users.map((user) => {
                     return (
-                        <TableRow key={item}>
-                            <TableCell className="border-b py-1">902</TableCell>
+                        <TableRow key={user.id}>
                             <TableCell className="border-b py-1">
-                                Luan VP Santos
+                                {user.id}
                             </TableCell>
                             <TableCell className="border-b py-1">
-                                lvluansantos@gmail.com
+                                {user.name}
                             </TableCell>
                             <TableCell className="border-b py-1">
-                                lvluansantos
+                                {user.email}
                             </TableCell>
                             <TableCell className="border-b py-1">
-                                10/10/2022 as 14:32
+                                {user.username}
                             </TableCell>
                             <TableCell className="border-b py-1">
-                                10/10/2022 as 14:32
+                                {dateExtFormatter(user.created_at)}
                             </TableCell>
                             <TableCell className="border-b py-1">
-                                <Button variant={"outline"} className="h-8">
-                                    Editar
-                                </Button>
+                                {dateExtFormatter(user.updated_at)}
+                            </TableCell>
+                            <TableCell className="border-b py-1">
+                                <UsersEdit user={{ ...user, password: "" }} />
                             </TableCell>
                         </TableRow>
                     );

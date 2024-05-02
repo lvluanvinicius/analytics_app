@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { env } from "@/env";
 import { appLogin, AppLoginParams } from "@/services/queries/app-login";
+import { setToken } from "@/services/token";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const signInSchema = z.object({
@@ -14,12 +16,20 @@ const signInSchema = z.object({
 type SignInType = z.infer<typeof signInSchema>;
 
 export function SignIn() {
+    const navigate = useNavigate();
     const { handleSubmit, register } = useForm<SignInType>({
-        values: { username: "luan1", password: "teste1" },
+        // values: { username: "luan1", password: "teste1" },
     });
 
-    const { mutateAsync: appLoginFn, data: responseData } = useMutation({
+    const { mutateAsync: appLoginFn } = useMutation({
         mutationFn: appLogin,
+
+        onSuccess: (response) => {
+            if (response.status && response.data) {
+                setToken(response.data.token);
+                navigate("/app");
+            }
+        },
     });
 
     async function handleAppLogin({ username, password }: AppLoginParams) {

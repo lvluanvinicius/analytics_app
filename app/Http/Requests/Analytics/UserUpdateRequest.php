@@ -4,7 +4,7 @@ namespace App\Http\Requests\Analytics;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserRegisterRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,9 @@ class UserRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|unique:users,username,except,id',
-            'password' => 'required',
+            'username' => 'required',
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,except,id',
+            'email' => 'required',
         ];
     }
 
@@ -42,11 +41,8 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             'username.required' => 'O username é obrigatório.',
-            'username.unique' => 'O username informado já existe.',
-            'password.required' => 'O password é  obrigatório.',
             'name.required' => 'O name é obrigatório.',
             'email.required' => 'O email é obrigatório.',
-            'email.unique' => 'O email informado já existe.',
         ];
     }
 }

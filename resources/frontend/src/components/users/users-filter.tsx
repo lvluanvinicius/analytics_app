@@ -53,7 +53,7 @@ export function UsersFilter() {
     return (
         <div className="mb-2 w-full ">
             <form
-                className="flex w-full gap-2"
+                className="flex w-full gap-2 border"
                 onSubmit={handleSubmit(handleSearchString)}
             >
                 <Input

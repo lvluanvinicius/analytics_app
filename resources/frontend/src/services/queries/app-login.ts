@@ -1,5 +1,5 @@
-import { api } from "../axios";
-import { csrfCookie } from "../csrf-cookie";
+import { env } from "@/env";
+import axios from "axios";
 
 export interface AppLoginParams {
     username: string;
@@ -14,29 +14,40 @@ export interface UserProps {
     name: string;
     username: string;
 }
-
 export interface AppLoginResponse {
     message: string;
     status: boolean;
     type: string;
-    data?: UserProps;
+    data?: {
+        user: UserProps;
+        token: string;
+    };
     errors?: {
         [key: string]: string;
     };
 }
 
-export async function appLogin({ username, password }: AppLoginParams) {
-    return await csrfCookie().then(async () => {
-        // Efetuando requisição de login.
-        const response = await api.post<AppLoginResponse>("/login", {
+export async function appLogin({
+    username,
+    password,
+}: AppLoginParams): Promise<AppLoginResponse> {
+    // Efetuando requisição de login.
+    const response = await axios.post<AppLoginResponse>(
+        `${env.VITE_API_URL}api/analytics/login`,
+        {
             username,
             password,
-        });
+        },
+        {
+            headers: {
+                Accept: "application/json",
+            },
+        },
+    );
 
-        if (response.data && response.data.status) {
-            return response.data;
-        } else {
-            throw new Error(response.data.message);
-        }
-    });
+    if (response.data && response.data.data) {
+        return response.data;
+    } else {
+        throw new Error(response.data.message);
+    }
 }
