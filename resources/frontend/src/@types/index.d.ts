@@ -17,3 +17,13 @@ declare interface ApiResponse<T> {
     total: number;
     data: T;
 }
+
+declare interface ActionsResponse<T> {
+    message: string;
+    status: boolean;
+    type: string;
+    data: T;
+    errors?: {
+        [key: string]: string;
+    };
+}

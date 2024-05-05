@@ -47,7 +47,7 @@ export async function editUsers({
             return data;
         }
 
-        throw new Error("Contente da requisição não encontrado.");
+        throw new Error("Content da requisição não encontrado.");
     }
 
     throw new Error("Erro ao tentar recuperar os dados do usuários.");

@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { UsersCreate } from "./users-create";
 
 const searchFilter = z.object({
     search: z.string().optional(),
@@ -14,7 +15,7 @@ export function UsersFilter() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     // Recuperando valor do paramaetro de 'search';
-    const search = searchParams.get("search") ?? "";
+    const search = searchParams.get("search") ?? null;
 
     const { handleSubmit, register, reset } = useForm<SearchFilterType>({
         values: {
@@ -53,7 +54,7 @@ export function UsersFilter() {
     return (
         <div className="mb-2 w-full ">
             <form
-                className="flex w-full gap-2 border"
+                className="flex w-full gap-2"
                 onSubmit={handleSubmit(handleSearchString)}
             >
                 <Input
@@ -67,6 +68,8 @@ export function UsersFilter() {
                 <Button variant="outline" type="button" onClick={clearFilter}>
                     Limpar Filtro
                 </Button>
+
+                <UsersCreate />
             </form>
         </div>
     );

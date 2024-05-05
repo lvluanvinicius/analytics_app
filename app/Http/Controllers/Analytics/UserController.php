@@ -41,11 +41,11 @@ class UserController extends Controller
     {
         try {
             // Recuperando dados da requisição.
-            $search = $request->get('search') ?? null;
+            $params = $request->only(['search', 'order', 'order_by']);
             $perPage = $request->get('per_page') ?? 20;
 
             // Recuperando usuários.
-            $users = $this->userRepository->users($search, $perPage);
+            $users = $this->userRepository->users($params, $perPage);
 
             return $this->successResponse($users, 'Usuários recuperados com sucesso.');
         } catch (\App\Exceptions\Analytics\UserException $error) {
@@ -104,6 +104,33 @@ class UserController extends Controller
             return $this->successResponse([
                 'user' => $user,
             ], 'Usuário atualizado com sucesso!');
+        } catch (\App\Exceptions\Analytics\UserException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Exclui um usuário.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $userid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(string $userid): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // Valida se o ID de exclusão é o mesmo a quem está efetuando a ação.
+            $userid === strval(auth()->user()->id) && throw new \App\Exceptions\Analytics\UserException("Você não pode excluír a si mesmo.");
+
+            // Carregando dados do usuário na requisição.
+            $this->userRepository->destroy(
+                $userid
+            );
+
+            return $this->successMessageResponse('Usuário excluído com sucesso!');
         } catch (\App\Exceptions\Analytics\UserException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {

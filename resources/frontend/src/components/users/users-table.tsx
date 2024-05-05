@@ -9,6 +9,7 @@ import {
 } from "../ui/table";
 import { dateExtFormatter } from "@/utils/formatter";
 import { UsersEdit } from "./users-edit";
+import { UsersDelete } from "./users-delete";
 
 interface UsersTableProps {
     users: UserProps[];
@@ -53,7 +54,12 @@ export function UsersTable({ users }: UsersTableProps) {
                                 {dateExtFormatter(user.updated_at)}
                             </TableCell>
                             <TableCell className="border-b py-1">
-                                <UsersEdit user={{ ...user, password: "" }} />
+                                <div className="flex items-center justify-center gap-4">
+                                    <UsersEdit
+                                        user={{ ...user, password: "" }}
+                                    />
+                                    <UsersDelete userId={user.id} />
+                                </div>
                             </TableCell>
                         </TableRow>
                     );

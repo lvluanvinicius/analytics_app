@@ -4,6 +4,7 @@ import { Users } from "./pages/users";
 import { Dashboard } from "./pages/dashboard";
 import { SignInLayout } from "./_layouts/sign-in";
 import { SignIn } from "./pages/sign-in";
+import { AnalyticsSettings } from "./pages/analytics-settings";
 
 export const routes = createBrowserRouter([
     {
@@ -31,6 +32,10 @@ export const routes = createBrowserRouter([
             {
                 path: "users/",
                 element: <Users />,
+            },
+            {
+                path: "analytics-settings/",
+                element: <AnalyticsSettings />,
             },
         ],
     },

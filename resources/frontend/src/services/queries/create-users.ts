@@ -5,7 +5,6 @@ export interface UserProps {
     name: string;
     username: string;
     password: string | null;
-    userid: string;
 }
 
 export interface UserCreateResponse {
@@ -24,7 +23,6 @@ export interface UserCreateResponse {
  * Cria um novo usuário.
  * @author Luan Santos <lvluansantos@gmail.com>
  * @param data
- * @returns
  */
 export async function createUsers(data: UserProps) {
     const response = await api.post("/users", data);
@@ -32,11 +30,11 @@ export async function createUsers(data: UserProps) {
     if (response.data) {
         const { data } = response;
 
-        if (data.data) {
-            return data.data;
+        if (data) {
+            return data;
         }
 
-        throw new Error("Contente da requisição não encontrado.");
+        throw new Error("Content da requisição não encontrado.");
     }
 
     throw new Error("Erro ao tentar recuperar os dados do usuários.");

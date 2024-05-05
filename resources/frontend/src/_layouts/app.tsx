@@ -4,6 +4,7 @@ import { isAxiosError } from "axios";
 import { useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { toast } from "sonner";
 
 export function AppLayout() {
     const navigate = useNavigate();
@@ -21,6 +22,17 @@ export function AppLayout() {
                             navigate("/app/sign-in", {
                                 replace: true,
                             });
+                        }
+
+                        if (error.response && error.response.data) {
+                            const data: ActionsResponse<[]> =
+                                error.response.data;
+
+                            for (let err in data.errors) {
+                                for (let m of data.errors[err]) {
+                                    toast.error(m);
+                                }
+                            }
                         }
                     }
 

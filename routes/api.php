@@ -21,6 +21,7 @@ Route::middleware('throttle:1000,1')->prefix('analytics')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::post('/', [UserController::class, 'register'])->name('register');
             Route::put('/{userid}', [UserController::class, 'update'])->name('update');
+            Route::delete('/{userid}', [UserController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('equipaments')->as('equipaments.')->group(function () {

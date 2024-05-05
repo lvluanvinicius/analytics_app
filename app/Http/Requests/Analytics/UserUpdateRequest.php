@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Analytics;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserUpdateRequest extends FormRequest
@@ -24,7 +25,12 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required',
+            'username' => [
+                'required',
+                \Illuminate\Validation\Rule::unique('users', 'username')->where(
+                    fn(Builder $query) => $query->where('id', '!=', $this->userid)
+                ),
+            ],
             'name' => 'required',
             'email' => 'required',
         ];

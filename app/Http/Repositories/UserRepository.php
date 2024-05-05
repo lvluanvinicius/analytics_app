@@ -38,39 +38,45 @@ class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
      * @param integer $perPage
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function users(string | null $search, int $perPage = 30): \Illuminate\Pagination\LengthAwarePaginator
+    public function users(array $params, int $perPage = 30): \Illuminate\Pagination\LengthAwarePaginator
     {
         // Criando query de consulta.
         $userQuery = $this->user->query();
 
-        // Ordenando valores por data de criação.
-        $userQuery->orderBy('created_at', 'desc');
+        // Valida se o search foi informado.
+        if (array_key_exists('search', $params)) {
 
-        // Validando valor de search.
-        if (!$search) {
-            return $userQuery->paginate($perPage);
-        }
+            // Recuperando valor de search.
+            $search = $params['search'];
 
-        // Efetuando filtro de string se houver.
-        $userQuery->where(function ($query) use ($search) {
-            // dd(!strpos('%', $search));
-            // Valida se não há nenhum porcentagem coringa e adiciona.
-
+            // Valida se search possui '%' e adiciona se não possuir.
             if (strpos($search, '%') === false) {
-                $search = "%{$search}%";
+                $search = '%' . strtolower($search) . '%';
             }
 
-            // Transformando string em minúsculas.
-            $search = strtolower($search);
+            // Aplicando filtros.
+            $userQuery->where(function ($query) use ($search) {
 
-            // Adicionando filtros.
-            $query->orWhereRaw("LOWER(users.name) LIKE ?", [$search])
-                ->orWhereRaw("LOWER(users.email) LIKE ?", [$search])
-                ->orWhereRaw("LOWER(users.username) LIKE ?", [$search]);
-        });
+                $query
+                    ->orWhereRaw("LOWER(name) LIKE ?", [$search])
+                    ->orWhereRaw("LOWER(email) LIKE ?", [$search])
+                    ->orWhereRaw("LOWER(username) LIKE ?", [$search]);
+            });
+        }
 
-        // Retorna consulta com filtros.
+        // Valida se a ordenação foi informada.
+        if (array_key_exists('order', $params)) {
+            // Valida se a ordenação será por uma coluna específica.
+            if (array_key_exists('order_by', $params)) {
+                $userQuery->orderBy($params['order_by'], $params['order']);
+            } else {
+                // Ordena pela data de criação de não for informada outra.
+                $userQuery->orderBy('created_at', $params['order']);
+            }
+        }
+
         return $userQuery->paginate($perPage);
+
     }
 
     /**
@@ -116,14 +122,9 @@ class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
         // Recuperando usuário para edição.
         $user = $this->user->where('id', $userid)->first();
 
-        // Validando se o username já está em uso.
-        if ($this->validateExists($user->id, 'username', $attr['username'])) {
-            throw new UserException('O username informado já está em uso.');
-        }
-
-        // Validando se o email já está em uso.
-        if ($this->validateExists($user->id, 'email', null, $attr['email'])) {
-            throw new UserException('O email informado já está em uso.');
+        // Valida se o registro foi localizado.
+        if (!$user) {
+            throw new UserException("Usuário não encontrado.");
         }
 
         // Valida se a senha foi informada.
@@ -143,6 +144,32 @@ class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
         }
 
         return $user;
+    }
+
+    /**
+     * Exclui um registro.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $userid
+     * @return boolean
+     */
+    public function destroy(string $userid): bool
+    {
+        // Recuperando usuário para edição.
+        $user = $this->user->where('id', $userid)->first();
+
+        // Valida se o registro foi localizado.
+        if (!$user) {
+            throw new UserException("Usuário não encontrado.");
+        }
+
+        // valida se o usuário foi excluído corretamente.
+        if (!$user->delete()) {
+            throw new UserException('Erro ao tentar atualizar o usuário.');
+        }
+
+        return true;
     }
 
     /**

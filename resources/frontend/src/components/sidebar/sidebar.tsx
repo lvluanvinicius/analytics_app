@@ -1,6 +1,6 @@
-import { UsersRound, Webhook } from "lucide-react";
+import { UsersRound, Webhook, Cable } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ModeToggle } from "../themes/mode-toggle";
+import { Settings } from "./settings";
 
 export function Sidebar() {
     return (
@@ -23,11 +23,21 @@ export function Sidebar() {
                             <UsersRound size={24} />
                         </li>
                     </Link>
+
+                    <Link
+                        to={"analytics-settings"}
+                        className="w-full"
+                        title="Analytics Configurações"
+                    >
+                        <li className="flex w-full justify-center py-2">
+                            <Cable size={24} />
+                        </li>
+                    </Link>
                 </ul>
 
                 <ul className="flex w-full flex-col">
                     <li className="flex w-full justify-center py-2">
-                        <ModeToggle />
+                        <Settings />
                     </li>
                 </ul>
             </main>

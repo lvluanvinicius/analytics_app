@@ -1,22 +1,17 @@
 import { api } from "../axios";
 
-export interface getUsersParams {
-    search: string | null;
-}
-
-export interface UserProps {
+export interface EquipamentsProps {
     created_at: string;
     updated_at: string;
-    email: string;
-    id: string;
+    _id: string;
     name: string;
-    username: string;
+    n_port: number;
 }
 
 export async function getUsers({
     search,
-}: getUsersParams): Promise<ApiResponse<UserProps[]>> {
-    const response = await api.get("/users", {
+}: any): Promise<ApiResponse<EquipamentsProps[]>> {
+    const response = await api.get("/equipaments", {
         params: {
             search: search ?? null,
         },
@@ -26,7 +21,7 @@ export async function getUsers({
         const { data } = response;
 
         if (data.data) {
-            return data.data;
+            return data;
         }
 
         throw new Error("Content da requisição não encontrado.");

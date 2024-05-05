@@ -1,7 +1,6 @@
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -13,13 +12,9 @@ import { Input } from "../ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { editUsers, UserProps } from "@/services/queries/edit-users";
+import { createUsers } from "@/services/queries/create-users";
 import { queryClient } from "@/services/react-query";
 import { toast } from "sonner";
-
-interface UsersEditProps {
-    user: UserProps;
-}
 
 const userSchema = z.object({
     username: z.string(),
@@ -30,20 +25,13 @@ const userSchema = z.object({
 
 type UserTypeSchema = z.infer<typeof userSchema>;
 
-export function UsersEdit({ user }: UsersEditProps) {
+export function UsersCreate() {
     const [open, setOpen] = useState(false);
 
-    const { handleSubmit, register } = useForm<UserTypeSchema>({
-        values: {
-            name: user.name,
-            username: user.username,
-            email: user.email,
-            password: "",
-        },
-    });
+    const { handleSubmit, register, reset } = useForm<UserTypeSchema>();
 
-    const { mutateAsync: editUserFn } = useMutation({
-        mutationFn: editUsers,
+    const { mutateAsync: createUserFn } = useMutation({
+        mutationFn: createUsers,
         onSuccess(userResponse) {
             // if (userResponse.data) {
             //     const { data } = userResponse;
@@ -85,6 +73,7 @@ export function UsersEdit({ user }: UsersEditProps) {
 
             if (userResponse.status) {
                 setOpen(false);
+                reset();
                 queryClient.invalidateQueries({
                     queryKey: ["users"],
                 });
@@ -101,27 +90,23 @@ export function UsersEdit({ user }: UsersEditProps) {
         name,
         email,
     }: UserTypeSchema) {
-        await editUserFn({
+        await createUserFn({
             username,
             password,
             name,
             email,
-            id: user.id,
         });
     }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"outline"} className="h-8">
-                    Editar
-                </Button>
+                <Button variant={"outline"}>+ Novo</Button>
             </DialogTrigger>
 
             <DialogContent className="pb-10">
                 <DialogHeader>
-                    <DialogTitle>Editar {user.name}</DialogTitle>
-                    <DialogDescription>Edição de Usuário</DialogDescription>
+                    <DialogTitle>Novo usuário</DialogTitle>
                 </DialogHeader>
 
                 <form
@@ -144,7 +129,7 @@ export function UsersEdit({ user }: UsersEditProps) {
                         placeholder="E-mail"
                     />
                     <Input
-                        {...register("password", { required: false })}
+                        {...register("password", { required: true })}
                         type="password"
                         placeholder="Senha"
                     />
