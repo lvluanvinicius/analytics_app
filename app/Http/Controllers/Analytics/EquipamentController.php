@@ -48,7 +48,7 @@ class EquipamentController extends Controller
         try {
             // Recuperando dados da requisição.
             $params = $request->only(['search', 'order', 'order_by']);
-            $perPage = $request->get('per_page') ?? 20;
+            $perPage = $request->get('per_page') ?? 15;
 
             // Recuperando usuários.
             $users = $this->gponEquipamentsRepository->getEquipaments($params, $perPage);
@@ -72,7 +72,7 @@ class EquipamentController extends Controller
     {
         try {
 
-            // Recupera os equipamentos. 
+            // Recupera os equipamentos.
             $equipaments = $this->gponEquipamentsRepository->getAllEquipaments();
 
             return $this->successResponse($equipaments, 'Equipamentos recuperados com sucesso.');

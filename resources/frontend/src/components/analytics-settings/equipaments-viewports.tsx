@@ -43,7 +43,10 @@ export function EquipamentsViewports({
                     <div className="max-h-[400px] flex-1 overflow-auto pr-4">
                         {ports?.data.map((port) => {
                             return (
-                                <div className="flex items-center justify-between border-b py-4 pb-2">
+                                <div
+                                    key={port._id}
+                                    className="flex items-center justify-between border-b py-4 pb-2"
+                                >
                                     <span>{port._id}</span>
                                     <span>{port.port}</span>
                                 </div>

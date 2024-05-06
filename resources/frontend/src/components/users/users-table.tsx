@@ -17,54 +17,66 @@ interface UsersTableProps {
 
 export function UsersTable({ users }: UsersTableProps) {
     return (
-        <Table className="w-full border-collapse text-left">
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="border-b">ID</TableHead>
-                    <TableHead className="border-b">Nome</TableHead>
-                    <TableHead className="border-b">E-mail</TableHead>
-                    <TableHead className="border-b">Usuário</TableHead>
-                    <TableHead className="border-b">Data de Criação</TableHead>
-                    <TableHead className="border-b">
-                        Data de Modificação
-                    </TableHead>
-                    <TableHead className="border-b"></TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {users.map((user) => {
-                    return (
-                        <TableRow key={user.id}>
-                            <TableCell className="border-b py-1">
-                                {user.id}
-                            </TableCell>
-                            <TableCell className="border-b py-1">
-                                {user.name}
-                            </TableCell>
-                            <TableCell className="border-b py-1">
-                                {user.email}
-                            </TableCell>
-                            <TableCell className="border-b py-1">
-                                {user.username}
-                            </TableCell>
-                            <TableCell className="border-b py-1">
-                                {dateExtFormatter(user.created_at)}
-                            </TableCell>
-                            <TableCell className="border-b py-1">
-                                {dateExtFormatter(user.updated_at)}
-                            </TableCell>
-                            <TableCell className="border-b py-1">
-                                <div className="flex items-center justify-center gap-4">
-                                    <UsersEdit
-                                        user={{ ...user, password: "" }}
-                                    />
-                                    <UsersDelete userId={user.id} />
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
-        </Table>
+        <div className="w-full flex-1 overflow-auto">
+            <Table className="mt-4 !w-full !min-w-[600px] !border-collapse">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="whitespace-nowrap border-b">
+                            ID
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap border-b">
+                            Nome
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap border-b">
+                            E-mail
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap border-b">
+                            Usuário
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap border-b">
+                            Data de Criação
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap border-b">
+                            Data de Modificação
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap border-b"></TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {users.map((user) => {
+                        return (
+                            <TableRow key={user.id}>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    {user.id}
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    {user.name}
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    {user.email}
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    {user.username}
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    {dateExtFormatter(user.created_at)}
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    {dateExtFormatter(user.updated_at)}
+                                </TableCell>
+                                <TableCell className="whitespace-nowrap border-b py-1 font-medium">
+                                    <div className="flex items-center justify-center gap-4">
+                                        <UsersEdit
+                                            user={{ ...user, password: "" }}
+                                        />
+                                        <UsersDelete userId={user.id} />
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </div>
     );
 }

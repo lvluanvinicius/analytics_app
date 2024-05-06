@@ -4,14 +4,14 @@ import { Settings } from "./settings";
 
 export function Sidebar() {
     return (
-        <aside className="fixed h-[100vh] w-[70px] bg-gray-100 shadow-md shadow-black/25 dark:bg-black/70 dark:shadow-gray-50">
+        <aside className="fixed flex h-[100vh] w-[70px] flex-col bg-gray-100 shadow-md shadow-black/25 dark:bg-black/70 dark:shadow-gray-50">
             <div className="flex h-[70px] w-full items-center justify-center">
                 <Link to={""}>
                     <Webhook size={32} className="dark:text-green-500" />
                 </Link>
             </div>
 
-            <main className="flex w-[70px] flex-1 flex-col justify-between">
+            <main className="flex w-[70px] flex-1 flex-col justify-between ">
                 <ul className="flex w-full flex-col">
                     {/* <Link to={""} className="w-full">
                         <li className="flex w-full justify-center py-2">

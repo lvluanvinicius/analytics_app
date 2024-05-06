@@ -2,6 +2,7 @@ import { api } from "../axios";
 
 export interface getUsersParams {
     search: string | null;
+    page: string | number;
 }
 
 export interface UserProps {
@@ -15,10 +16,12 @@ export interface UserProps {
 
 export async function getUsers({
     search,
+    page,
 }: getUsersParams): Promise<ApiResponse<UserProps[]>> {
     const response = await api.get("/users", {
         params: {
             search: search ?? null,
+            page,
         },
     });
 
