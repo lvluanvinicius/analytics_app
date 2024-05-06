@@ -28,6 +28,7 @@ Route::middleware('throttle:1000,1')->prefix('analytics')->group(function () {
             Route::get('', [EquipamentController::class, 'index'])->name('index');
             Route::get('get-all', [EquipamentController::class, 'all'])->name('all');
             Route::post('/', [EquipamentController::class, 'store'])->name('store');
+            Route::delete('/{equipamentId}', [EquipamentController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('ports')->as('ports.')->group(function () {

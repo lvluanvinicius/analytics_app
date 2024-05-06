@@ -1,5 +1,4 @@
 import { dateExtFormatter } from "@/utils/formatter";
-import { Button } from "../ui/button";
 import {
     Table,
     TableBody,
@@ -9,6 +8,8 @@ import {
     TableRow,
 } from "../ui/table";
 import { EquipamentsProps } from "@/services/queries/get-equipaments";
+import { DeleteEquipaments } from "./equipaments-delete";
+import { EquipamentsViewports } from "./equipaments-viewports";
 
 interface EquipamentsTableProps {
     equipaments: EquipamentsProps[];
@@ -32,23 +33,26 @@ export function EquipamentsTable({ equipaments }: EquipamentsTableProps) {
             <TableBody>
                 {equipaments.map((equipament) => (
                     <TableRow key={equipament._id}>
-                        <TableCell className="!py-1">
+                        <TableCell className="border-b !py-1">
                             {equipament._id}
                         </TableCell>
-                        <TableCell className="!py-1">
+                        <TableCell className="border-b !py-1">
                             {equipament.name}
                         </TableCell>
-                        <TableCell className="flex items-center justify-between gap-4 !py-1 ">
+                        <TableCell className="flex items-center justify-between gap-4 border-b !py-1 ">
                             <span>{equipament.n_port} Porta(s)</span>
-                            <Button variant={"outline"} size={"sm"}>
-                                Ver Portas
-                            </Button>
+                            <EquipamentsViewports
+                                equipamentName={equipament.name}
+                            />
                         </TableCell>
-                        <TableCell className="!py-1">
+                        <TableCell className="border-b !py-1">
                             {dateExtFormatter(equipament.created_at)}
                         </TableCell>
-                        <TableCell className="!py-1">
+                        <TableCell className="border-b !py-1">
                             {dateExtFormatter(equipament.updated_at)}
+                        </TableCell>
+                        <TableCell className="border-b !py-1">
+                            <DeleteEquipaments equipamentId={equipament._id} />
                         </TableCell>
                     </TableRow>
                 ))}

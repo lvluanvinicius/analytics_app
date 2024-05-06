@@ -110,4 +110,39 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
         return $equipament;
 
     }
+
+    /**
+     * Exclui um registro.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $equipamentId
+     * @return boolean
+     */
+    public function destroyEquipament(string $equipamentId): bool
+    {
+        // Recuperando registro.
+        $equipament = $this->gponEquipaments->where('_id', $equipamentId)->first();
+
+        // Valida se o registro foi localizado.
+        if (!$equipament) {
+            throw new \App\Exceptions\Analytics\GponEquipamentsException('Equipamento não encontrado.');
+        }
+
+        // Iniciando repositorio de portas.
+        $portsRepository = new \App\Http\Repositories\GponPortsRepository((new \App\Models\GponPorts));
+
+        // Efetuando a exclusão das portas do equipamento.
+        $portsRepository->destroyPerEquipamentId($equipament->_id);
+
+        // Efetuando a exclusão e validando.
+        {
+            if (!$equipament->delete()) {
+                throw new \App\Exceptions\Analytics\GponEquipamentsException('Erro ao tentar excluír o equipamento.');
+            }
+        }
+
+        return true;
+
+    }
 }

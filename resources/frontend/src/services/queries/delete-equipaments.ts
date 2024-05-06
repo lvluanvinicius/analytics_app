@@ -1,18 +1,18 @@
 import { api } from "../axios";
 
-export interface EquipamentsProps {
-    name: string;
-    n_port: number;
+export interface DeleteEquipamentsProps {
+    equipamentId: string;
 }
+
 /**
- * Cria um novo usuário.
+ * Edita um usuário.
  * @author Luan Santos <lvluansantos@gmail.com>
- * @param data
+ * @param {equipamentId} DeleteEquipamentsProps
  */
-export async function createEquipaments(
-    data: EquipamentsProps,
-): Promise<ActionsResponse<[]>> {
-    const response = await api.post<ActionsResponse<[]>>("/equipaments", data);
+export async function deleteEquipaments({
+    equipamentId,
+}: DeleteEquipamentsProps): Promise<ActionsResponse<[]>> {
+    const response = await api.delete(`/equipaments/${equipamentId}`);
 
     if (response.data) {
         const { data } = response;

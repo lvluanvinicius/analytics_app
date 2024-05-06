@@ -53,7 +53,7 @@ class EquipamentController extends Controller
             // Recuperando usuários.
             $users = $this->gponEquipamentsRepository->getEquipaments($params, $perPage);
 
-            return $this->successResponse($users, 'Usuários recuperados com sucesso.');
+            return $this->successResponse($users, 'Equipamentos recuperados com sucesso.');
         } catch (\App\Exceptions\Analytics\UserException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception $error) {
@@ -72,6 +72,7 @@ class EquipamentController extends Controller
     {
         try {
 
+            // Recupera os equipamentos. 
             $equipaments = $this->gponEquipamentsRepository->getAllEquipaments();
 
             return $this->successResponse($equipaments, 'Equipamentos recuperados com sucesso.');
@@ -132,6 +133,26 @@ class EquipamentController extends Controller
         } catch (GponEquipamentsException $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
         } catch (\Exception  | ModelNotFoundException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Efetua a exclusão de um equipamento.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $equipamentId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(string $equipamentId): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // Efetua a exclusão.
+            $equipaments = $this->gponEquipamentsRepository->destroyEquipament($equipamentId);
+
+            return $this->successResponse($equipaments, 'Equipamento excluído com sucesso.');
+        } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
         }
     }
