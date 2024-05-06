@@ -71,7 +71,7 @@ class UserRepository implements \App\Http\Interfaces\UserRepositoryInterface
                 $userQuery->orderBy($params['order_by'], $params['order']);
             } else {
                 // Ordena pela data de criação de não for informada outra.
-                $userQuery->orderBy('created_at', $params['order']);
+                $userQuery->orderBy('created_at', 'desc');
             }
         }
 

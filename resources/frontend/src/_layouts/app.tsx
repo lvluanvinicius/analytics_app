@@ -17,6 +17,7 @@ export function AppLayout() {
                     if (isAxiosError(error)) {
                         const status = error.response?.status;
                         const statusText = error.response?.statusText;
+                        const code = error.code;
 
                         if (status === 401 && statusText === "Unauthorized") {
                             navigate("/app/sign-in", {
@@ -24,7 +25,15 @@ export function AppLayout() {
                             });
                         }
 
-                        if (error.response && error.response.data) {
+                        if (status === 400 && code === "ERR_BAD_REQUEST") {
+                            toast.error(error.response?.data?.message);
+                        }
+
+                        if (
+                            status === 422 &&
+                            error.response &&
+                            error.response.data
+                        ) {
                             const data: ActionsResponse<[]> =
                                 error.response.data;
 
@@ -50,7 +59,7 @@ export function AppLayout() {
     return (
         <div className="flex min-h-screen  antialiased">
             <Sidebar />
-            <div className="light:bg-gray-100 flex flex-1 flex-col gap-4 p-8 pt-4">
+            <div className="light:bg-gray-100 ml-[70px] flex flex-1 flex-col gap-4 p-8 pt-4">
                 <Outlet />
             </div>
         </div>

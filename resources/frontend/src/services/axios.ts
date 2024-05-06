@@ -3,7 +3,6 @@ import axios from "axios";
 import { env } from "@/env";
 import { getToken } from "./token";
 
-
 // Recuperando token na sessão.
 const token = getToken();
 

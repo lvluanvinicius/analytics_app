@@ -1,3 +1,4 @@
+import { dateExtFormatter } from "@/utils/formatter";
 import { Button } from "../ui/button";
 import {
     Table,
@@ -7,8 +8,13 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
+import { EquipamentsProps } from "@/services/queries/get-equipaments";
 
-export function EquipamentsTable() {
+interface EquipamentsTableProps {
+    equipaments: EquipamentsProps[];
+}
+
+export function EquipamentsTable({ equipaments }: EquipamentsTableProps) {
     return (
         <Table className="mt-4 w-full">
             <TableHeader>
@@ -24,44 +30,28 @@ export function EquipamentsTable() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell>661e6b214022c8e44d07fc88</TableCell>
-                    <TableCell>PRJ-OLT4-DATACOM</TableCell>
-                    <TableCell className="flex items-center justify-between gap-4 ">
-                        <span>16</span>
-                        <Button variant={"outline"} size={"sm"}>
-                            Ver Portas
-                        </Button>
-                    </TableCell>
-                    <TableCell>01/01/2024 14:00</TableCell>
-                    <TableCell>01/01/2024 14:00</TableCell>
-                </TableRow>
-
-                <TableRow>
-                    <TableCell>661e6b214022c8e44d07fc88</TableCell>
-                    <TableCell>PRJ-OLT4-DATACOM</TableCell>
-                    <TableCell className="flex items-center justify-between gap-4 ">
-                        <span>16</span>
-                        <Button variant={"outline"} size={"sm"}>
-                            Ver Portas
-                        </Button>
-                    </TableCell>
-                    <TableCell>01/01/2024 14:00</TableCell>
-                    <TableCell>01/01/2024 14:00</TableCell>
-                </TableRow>
-
-                <TableRow>
-                    <TableCell>661e6b214022c8e44d07fc88</TableCell>
-                    <TableCell>PRJ-OLT4-DATACOM</TableCell>
-                    <TableCell className="flex items-center justify-between gap-4 ">
-                        <span>16</span>
-                        <Button variant={"outline"} size={"sm"}>
-                            Ver Portas
-                        </Button>
-                    </TableCell>
-                    <TableCell>01/01/2024 14:00</TableCell>
-                    <TableCell>01/01/2024 14:00</TableCell>
-                </TableRow>
+                {equipaments.map((equipament) => (
+                    <TableRow key={equipament._id}>
+                        <TableCell className="!py-1">
+                            {equipament._id}
+                        </TableCell>
+                        <TableCell className="!py-1">
+                            {equipament.name}
+                        </TableCell>
+                        <TableCell className="flex items-center justify-between gap-4 !py-1 ">
+                            <span>{equipament.n_port} Porta(s)</span>
+                            <Button variant={"outline"} size={"sm"}>
+                                Ver Portas
+                            </Button>
+                        </TableCell>
+                        <TableCell className="!py-1">
+                            {dateExtFormatter(equipament.created_at)}
+                        </TableCell>
+                        <TableCell className="!py-1">
+                            {dateExtFormatter(equipament.updated_at)}
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     );

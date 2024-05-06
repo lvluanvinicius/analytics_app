@@ -36,17 +36,43 @@ class EquipamentController extends Controller
     }
 
     /**
+     * Retorna todos os equipamentos com filtros e paginação.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(\Illuminate\Http\Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // Recuperando dados da requisição.
+            $params = $request->only(['search', 'order', 'order_by']);
+            $perPage = $request->get('per_page') ?? 20;
+
+            // Recuperando usuários.
+            $users = $this->gponEquipamentsRepository->getEquipaments($params, $perPage);
+
+            return $this->successResponse($users, 'Usuários recuperados com sucesso.');
+        } catch (\App\Exceptions\Analytics\UserException $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_OK);
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
      * Recupera todos os equipamentos.
      *
      * @author Luan Santos <lvluansantos@gmail.com>
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function all(): \Illuminate\Http\JsonResponse
     {
         try {
 
-            $equipaments = $this->gponEquipamentsRepository->getEquipaments();
+            $equipaments = $this->gponEquipamentsRepository->getAllEquipaments();
 
             return $this->successResponse($equipaments, 'Equipamentos recuperados com sucesso.');
         } catch (\Exception $error) {
@@ -77,14 +103,14 @@ class EquipamentController extends Controller
             $gponEquipament = new GponEquipaments();
 
             $gponEquipament->name = $request->name;
-            $gponEquipament->n_port = $request->number_ports;
+            $gponEquipament->n_port = $request->n_port;
 
             // Gerando strings de identificação de portas no padrão Datacom.
             $equipament = [];
 
             // Salvando e validando se ouve registro.
             if ($gponEquipament->save()) {
-                for ($p = 1; $p < $request->number_ports + 1; $p++) {
+                for ($p = 1; $p < $request->n_port + 1; $p++) {
                     // salvando no auxiliar os dados gerados a partir da quantidade de portas informada no request..
                     array_push($equipament, ["port" => "gpon 1/1/$p", "equipament_id" => $gponEquipament->id]);
                 }

@@ -23,7 +23,7 @@ class EquipamentsCreateRequest extends FormRequest
     {
         return [
             "name" => ["required"],
-            "number_ports" => ["required"],
+            "n_port" => ["required"],
         ];
     }
 
@@ -36,7 +36,7 @@ class EquipamentsCreateRequest extends FormRequest
     {
         return [
             "name" => "O campo 'name' é necessário.",
-            "number_ports" => "O campo 'number_ports' é necessário.",
+            "n_port" => "O campo 'number_ports' é necessário.",
         ];
     }
 }

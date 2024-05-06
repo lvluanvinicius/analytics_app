@@ -8,12 +8,19 @@ export interface EquipamentsProps {
     n_port: number;
 }
 
-export async function getUsers({
+export interface EquipamentsParams {
+    search: string | null;
+    page: string | null;
+}
+
+export async function getEquipaments({
     search,
-}: any): Promise<ApiResponse<EquipamentsProps[]>> {
+    page,
+}: EquipamentsParams): Promise<ApiResponse<EquipamentsProps[]>> {
     const response = await api.get("/equipaments", {
         params: {
             search: search ?? null,
+            page: page ?? null,
         },
     });
 
@@ -21,7 +28,7 @@ export async function getUsers({
         const { data } = response;
 
         if (data.data) {
-            return data;
+            return data.data;
         }
 
         throw new Error("Content da requisição não encontrado.");

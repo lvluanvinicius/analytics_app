@@ -10,6 +10,13 @@ class GponEquipaments extends Model
     use HasFactory;
 
     /**
+     * Define a chave primária.
+     *
+     * @var string
+     */
+    protected $primaryKey = "_id";
+
+    /**
      * Define a conexão para o modelo.
      *
      * @var string

@@ -1,5 +1,6 @@
 import { env } from "@/env";
 import axios from "axios";
+import { toast } from "sonner";
 
 export interface AppLoginParams {
     username: string;
@@ -48,6 +49,7 @@ export async function appLogin({
     if (response.data && response.data.data) {
         return response.data;
     } else {
-        throw new Error(response.data.message);
+        toast.error(response.data.message);
+        return response.data;
     }
 }
