@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import axios from "axios";
-import { toast } from "sonner";
+import { api } from "@/services/axios";
 
 export interface AppLoginParams {
     username: string;
@@ -28,28 +28,50 @@ export interface AppLoginResponse {
     };
 }
 
+/**
+ * Efetua o login na API.
+ * @author Luan Santos <lvluansantos@gmail.com>
+ * @param {
+ *  username: string
+ *  password: string
+ * }:AppLoginParams
+ */
 export async function appLogin({
     username,
     password,
 }: AppLoginParams): Promise<AppLoginResponse> {
-    // Efetuando requisição de login.
-    const response = await axios.post<AppLoginResponse>(
-        `${env.VITE_API_URL}api/analytics/login`,
-        {
-            username,
-            password,
-        },
-        {
-            headers: {
-                Accept: "application/json",
-            },
-        },
-    );
+    // Gerando CSRF-TOKEN
+    return await axios
+        .get(`${env.VITE_API_URL}/sanctum/csrf-cookie`, {
+            withCredentials: true,
+        })
+        .then((_) => {
+            return api
+                .post(
+                    "/sign-in",
+                    {
+                        username,
+                        password,
+                    },
+                    {
+                        withCredentials: true,
+                    },
+                )
+                .then((response) => {
+                    if (response.data) {
+                        const { data } = response;
 
-    if (response.data && response.data.data) {
-        return response.data;
-    } else {
-        toast.error(response.data.message);
-        return response.data;
-    }
+                        if (data) {
+                            return data;
+                        }
+
+                        throw new Error(
+                            "Content da requisição não encontrado.",
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro na autenticação", error.response);
+                });
+        });
 }

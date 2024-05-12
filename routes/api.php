@@ -10,11 +10,11 @@ use App\Http\Controllers\Analytics\ProxmoxController;
 use App\Http\Controllers\Analytics\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('throttle:1000,1')->prefix('analytics')->group(function () {
-    Route::post('/login', [AuthController::class, 'login']);
-    // Route::post('user/create', [UserController::class, 'register']);
+Route::middleware('throttle:1000,1')->prefix('analytics')->as('analytics.')->group(function () {
+    Route::post('/sign-in', [AuthController::class, 'signIn']);
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/sign-in/validate', [AuthController::class, 'validate']);
         Route::post('/logout', [AuthController::class, 'logout']);
 
         Route::prefix('users')->as('users.')->group(function () {

@@ -18,7 +18,7 @@ type SignInType = z.infer<typeof signInSchema>;
 export function SignIn() {
     const navigate = useNavigate();
     const { handleSubmit, register } = useForm<SignInType>({
-        // values: { username: "luan1", password: "teste1" },
+        values: { username: "luanpaiva", password: "1234" },
     });
 
     const { mutateAsync: appLoginFn } = useMutation({
