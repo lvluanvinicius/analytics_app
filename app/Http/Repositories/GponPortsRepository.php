@@ -36,6 +36,54 @@ class GponPortsRepository implements \App\Http\Interfaces\GponPortsRepositoryInt
     }
 
     /**
+     * Recupera os registros com filtro.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param array $params
+     * @param string $equipamentId
+     * @param integer $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getPortsPerEquipamentIdSearch(array $params, string $equipamentId, int $perPage = 10): \Illuminate\Pagination\LengthAwarePaginator
+    {
+        // Criando a query.
+        $gponPortsQuery = $this->gponPorts->query();
+
+        // Valida se o search foi informado.
+        if (array_key_exists('search', $params)) {
+
+            // Recuperando valor de search.
+            $search = $params['search'];
+
+            // Aplicando filtros.
+            $gponPortsQuery->where(function ($query) use ($search) {
+                // Criando expressão regular para pesquisa insensível a maiúsculas/minúsculas.
+                $regex = '/' . preg_quote($search, '/') . '/i';
+
+                $query->orWhere('_id', 'regex', $regex)
+                    ->orWhere('port', 'regex', $regex)
+                    ->orWhere('equipament_id', 'regex', $regex);
+            });
+        }
+
+        // Valida se a ordenação foi informada.
+        if (array_key_exists('order', $params)) {
+            // Valida se a ordenação será por uma coluna específica.
+            if (array_key_exists('order_by', $params)) {
+                $gponPortsQuery->orderBy($params['order_by'], $params['order']);
+            } else {
+                // Ordena pela data de criação de não for informada outra.
+                $gponPortsQuery->orderBy('created_at', 'desc');
+            }
+        } else {
+            $gponPortsQuery->orderBy('name', 'asc');
+        }
+
+        return $gponPortsQuery->paginate($perPage);
+    }
+
+    /**
      * Deleta todas as portas de um equipamento.
      *
      * @author Luan Santos <lvluansantos@gmail.com>

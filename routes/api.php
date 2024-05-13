@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:1000,1')->prefix('analytics')->as('analytics.')->group(function () {
     Route::post('/sign-in', [AuthController::class, 'signIn']);
+    Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/sign-in/validate', [AuthController::class, 'validate']);
@@ -33,6 +34,7 @@ Route::middleware('throttle:1000,1')->prefix('analytics')->as('analytics.')->gro
 
         Route::prefix('ports')->as('ports.')->group(function () {
             Route::get('/{equipament_name}', [PortsController::class, 'index'])->name('index');
+            Route::get('/all/{equipament_name}', [PortsController::class, 'indexAll'])->name('index');
         });
 
         Route::prefix('onus')->as('onus.')->group(function () {

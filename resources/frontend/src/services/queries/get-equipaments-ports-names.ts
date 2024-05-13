@@ -1,26 +1,24 @@
 import { api } from "@/services/axios";
 
-export interface EquipamentsProps {
-    created_at: string;
-    updated_at: string;
-    _id: string;
-    name: string;
-    n_port: number;
-}
-
-export interface EquipamentsParams {
+export interface EquipamentsPortsNamesParams {
     search: string | null;
     page?: string | null;
+    equipament: string;
+    port: string;
 }
 
-export async function getEquipaments({
+export async function getEquipamentsPortsNames({
     search,
     page,
-}: EquipamentsParams): Promise<ApiResponse<EquipamentsProps[]>> {
+    equipament,
+    port,
+}: EquipamentsPortsNamesParams): Promise<ApiResponse<String[]>> {
     const response = await api.get("/equipaments", {
         params: {
             search: search ?? null,
             page: page ?? null,
+            equipament,
+            port,
         },
     });
 

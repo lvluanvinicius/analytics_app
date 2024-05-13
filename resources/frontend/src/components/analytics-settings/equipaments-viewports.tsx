@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { getEquipamentsPorts } from "@/services/queries/get-equipaments-ports";
+import { getEquipamentsAllPorts } from "@/services/queries/get-equipaments-ports";
 import { useQuery } from "@tanstack/react-query";
 
 interface EquipamentsViewportsProps {
@@ -21,7 +21,7 @@ export function EquipamentsViewports({
     const [open, setOpen] = useState(false);
 
     const { data: ports } = useQuery({
-        queryFn: () => getEquipamentsPorts({ equipament: equipamentName }),
+        queryFn: () => getEquipamentsAllPorts({ equipament: equipamentName }),
         queryKey: ["equipaments-ports", equipamentName],
         enabled: open,
     });

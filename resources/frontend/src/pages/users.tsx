@@ -5,7 +5,6 @@ import { getUsers } from "@/services/queries/get-users";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
-import { z } from "zod";
 
 export function Users() {
     const [searchParams, setSearchParams] = useSearchParams();
