@@ -42,7 +42,7 @@ export async function appLogin({
 }: AppLoginParams): Promise<AppLoginResponse> {
     // Gerando CSRF-TOKEN
     return await axios
-        .get(`${env.VITE_API_URL}/sanctum/csrf-cookie`, {
+        .get(`${env.VITE_API_URL}sanctum/csrf-cookie`, {
             withCredentials: true,
         })
         .then((_) => {
