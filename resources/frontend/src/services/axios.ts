@@ -5,7 +5,7 @@ import { env } from "@/env";
 // Recuperando token na sessão.
 
 export const api = axios.create({
-    baseURL: `${env.VITE_API_URL}api/analytics`,
+    baseURL: `${env.VITE_API_URL}/api/analytics`,
     headers: {
         Accept: "application/json",
         common: {
