@@ -1,10 +1,9 @@
 import { getEquipaments } from "@/services/queries/get-equipaments";
 import { SelectedProps, Selector } from "@/components/global/selector";
-import { useState } from "react";
-import {} from "react";
-import { getEquipamentsPorts } from "@/services/queries/get-equipaments-ports";
-import { toast } from "sonner";
-import { getEquipamentsPortsNames } from "@/services/queries/get-equipaments-ports-names";
+import { useState, useEffect } from "react";
+
+import { AnalyticsGetPorts } from "./analytics-get-ports";
+import { AnalyticsGetGponName } from "./analytics-get-gpon-names";
 
 export function AnalyticsAattenuation() {
     const [selectorValuesEquipaments, setSelectorValuesEquipaments] = useState<
@@ -38,64 +37,14 @@ export function AnalyticsAattenuation() {
     const [selectedValuePorts, setSelectedValuePorts] =
         useState<SelectedProps>();
 
-    /**
-     * Recupera as portas.
-     * @param search
-     */
-    const handleSearchPorts = async (search: string) => {
-        if (!selectedValueEquipament) {
-            toast.error("Selecione um equipamento.");
-            return null;
-        }
+    const [selectorPortsNames, setSelectorPortsNames] = useState<
+        SelectedProps[]
+    >([]);
+    const [selectedPortName, setSelectedPortName] = useState<SelectedProps>();
 
-        const response = await getEquipamentsPorts({
-            equipament: selectedValueEquipament.name.toString(),
-            search,
-        });
-
-        const auxValues: SelectedProps[] = [];
-
-        for (let data of response.data) {
-            auxValues.push({
-                name: data.port,
-                value: data._id,
-            });
-        }
-
-        setSelectorValuesPorts(auxValues);
-        handleGetPortsNames("");
-    };
-
-    const handleGetPortsNames = async (search: string) => {
-        if (!selectedValueEquipament) {
-            toast.error("Selecione um equipamento.");
-            return null;
-        }
-
-        if (!selectedValuePorts) {
-            toast.error("Selecione uma porta.");
-            return null;
-        }
-
-        const response = await getEquipamentsPortsNames({
-            search,
-            equipament: selectedValueEquipament.name.toString(),
-            port: selectedValuePorts.name.toString(),
-        });
-
-        console.log(response.data);
-
-        // const auxValues: SelectedProps[] = [];
-
-        // for (let data of response.data) {
-        //     auxValues.push({
-        //         name: data.port,
-        //         value: data._id,
-        //     });
-        // }
-
-        // setSelectorValuesPorts(auxValues);
-    };
+    useEffect(() => {
+        console.log([selectorValuesPorts, selectorPortsNames]);
+    }, [selectedValueEquipament]);
 
     return (
         <div className="border-b pb-2">
@@ -110,14 +59,20 @@ export function AnalyticsAattenuation() {
                     }
                 />
 
-                <Selector
-                    selectTitle="Selecione uma porta"
-                    btnTitle={selectedValuePorts?.name ?? "Portas"}
-                    handleSearch={handleSearchPorts}
-                    selectorValues={selectorValuesPorts}
-                    handleSelect={(value, name) =>
-                        setSelectedValuePorts({ value, name })
-                    }
+                <AnalyticsGetPorts
+                    selectedValueEquipament={selectedValueEquipament}
+                    selectorValuesPorts={selectorValuesPorts}
+                    selectedValuePorts={selectedValuePorts}
+                    setSelectedValuePorts={setSelectedValuePorts}
+                    setSelectorValuesPorts={setSelectorValuesPorts}
+                />
+
+                <AnalyticsGetGponName
+                    selectedPortName={selectedPortName}
+                    setSelectedPortName={setSelectedPortName}
+                    selectedValuePorts={selectedValuePorts}
+                    selectorPortsNames={selectorPortsNames}
+                    setSelectorPortsNames={setSelectorPortsNames}
                 />
             </form>
         </div>

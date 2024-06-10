@@ -8,7 +8,7 @@ import { AnalyticsSettings } from "./pages/analytics-settings";
 
 export const routes = createBrowserRouter([
     {
-        path: "app/sign-in",
+        path: "sign-in",
         element: <SignInLayout />,
         children: [
             {
@@ -18,7 +18,7 @@ export const routes = createBrowserRouter([
         ],
     },
     {
-        path: "app/",
+        path: "",
         element: <AppLayout />,
         children: [
             {

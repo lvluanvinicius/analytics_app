@@ -9,7 +9,7 @@ export default defineConfig({
             input: ["resources/frontend/index.tsx"],
             refresh: true,
         }),
-        react(),
+        react()
     ],
     resolve: {
         alias: {

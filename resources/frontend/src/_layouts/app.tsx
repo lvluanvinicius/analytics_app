@@ -19,7 +19,7 @@ export function AppLayout() {
                         const code = error.code;
 
                         if (status === 401) {
-                            navigate("/app/sign-in", {
+                            navigate("/sign-in", {
                                 replace: true,
                             });
                         }

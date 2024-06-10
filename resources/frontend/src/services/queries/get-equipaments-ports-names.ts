@@ -7,13 +7,16 @@ export interface EquipamentsPortsNamesParams {
     port: string;
 }
 
+export interface GetEquipamentsPortsNames {}
+
 export async function getEquipamentsPortsNames({
     search,
     page,
     equipament,
     port,
 }: EquipamentsPortsNamesParams): Promise<ApiResponse<String[]>> {
-    const response = await api.get("/equipaments", {
+    console.log("teste");
+    const response = await api.get("/onus/names", {
         params: {
             search: search ?? null,
             page: page ?? null,

@@ -25,7 +25,7 @@ export function SignIn() {
         onSuccess: (response) => {
             if (response.status && response.data) {
                 setToken(response.data.token);
-                navigate("/app");
+                navigate("/");
             }
         },
     });
