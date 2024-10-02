@@ -8,7 +8,7 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
 
 {
     /**
-     * Guarda o moelo de equipamentos.
+     * Guarda o modelo de equipamentos.
      *
      * @author Luan Santos <lvluansantos@gmail.com>
      *
@@ -20,7 +20,6 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
      * Inicia o construtor.
      *
      * @author Luan Santos <lvluansantos@gmail.com>
-     *
      *
      * @param \App\Models\GponEquipaments $gponEquipaments
      */
@@ -41,32 +40,26 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
     public function getEquipaments(array $params, int $perPage = 30): \Illuminate\Pagination\LengthAwarePaginator
     {
         // Criando a query.
-        $equipamentsQuery = $this->gponEquipaments->query();
+        $equipamentsQuery = $this->gponEquipaments->newQuery();
 
         // Valida se o search foi informado.
         if (array_key_exists('search', $params)) {
-
             // Recuperando valor de search.
             $search = $params['search'];
 
-            // Aplicando filtros.
+            // Aplicando filtros com LIKE.
             $equipamentsQuery->where(function ($query) use ($search) {
-                // Criando expressão regular para pesquisa insensível a maiúsculas/minúsculas.
-                $regex = '/' . preg_quote($search, '/') . '/i';
-
-                $query->orWhere('_id', 'regex', $regex)
-                    ->orWhere('name', 'regex', $regex)
-                    ->orWhere('n_port', 'regex', $regex);
+                $query->orWhere('id', 'like', '%' . $search . '%')
+                    ->orWhere('name', 'like', '%' . $search . '%')
+                    ->orWhere('n_port', 'like', '%' . $search . '%');
             });
         }
 
         // Valida se a ordenação foi informada.
         if (array_key_exists('order', $params)) {
-            // Valida se a ordenação será por uma coluna específica.
             if (array_key_exists('order_by', $params)) {
                 $equipamentsQuery->orderBy($params['order_by'], $params['order']);
             } else {
-                // Ordena pela data de criação de não for informada outra.
                 $equipamentsQuery->orderBy('created_at', 'desc');
             }
         } else {
@@ -81,14 +74,11 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
      *
      * @author Luan Santos <lvluansantos@gmail.com>
      *
-     * @return GponEquipaments|\Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAllEquipaments(): GponEquipaments | \Illuminate\Database\Eloquent\Collection
+    public function getAllEquipaments(): \Illuminate\Database\Eloquent\Collection
     {
-        // Recuperando equipamentos.
-        $equipaments = GponEquipaments::orderBy('name', 'asc')->get();
-
-        return $equipaments;
+        return GponEquipaments::orderBy('name', 'asc')->get();
     }
 
     /**
@@ -98,6 +88,7 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
      *
      * @param string $name
      * @return GponEquipaments
+     * @throws \App\Exceptions\Analytics\GponEquipamentsException
      */
     public function getEquipamentPerName(string $name): GponEquipaments
     {
@@ -108,7 +99,6 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
         }
 
         return $equipament;
-
     }
 
     /**
@@ -117,32 +107,29 @@ class GponEquipamentsRepository implements \App\Http\Interfaces\GponEquipamentsR
      * @author Luan Santos <lvluansantos@gmail.com>
      *
      * @param string $equipamentId
-     * @return boolean
+     * @return bool
+     * @throws \App\Exceptions\Analytics\GponEquipamentsException
      */
     public function destroyEquipament(string $equipamentId): bool
     {
         // Recuperando registro.
-        $equipament = $this->gponEquipaments->where('_id', $equipamentId)->first();
+        $equipament = $this->gponEquipaments->find($equipamentId);
 
-        // Valida se o registro foi localizado.
         if (!$equipament) {
             throw new \App\Exceptions\Analytics\GponEquipamentsException('Equipamento não encontrado.');
         }
 
         // Iniciando repositorio de portas.
-        $portsRepository = new \App\Http\Repositories\GponPortsRepository((new \App\Models\GponPorts));
+        $portsRepository = new \App\Http\Repositories\GponPortsRepository(new \App\Models\GponPorts);
 
         // Efetuando a exclusão das portas do equipamento.
-        $portsRepository->destroyPerEquipamentId($equipament->_id);
+        $portsRepository->destroyPerEquipamentId($equipament->id);
 
-        // Efetuando a exclusão e validando.
-        {
-            if (!$equipament->delete()) {
-                throw new \App\Exceptions\Analytics\GponEquipamentsException('Erro ao tentar excluír o equipamento.');
-            }
+        // Efetuando a exclusão.
+        if (!$equipament->delete()) {
+            throw new \App\Exceptions\Analytics\GponEquipamentsException('Erro ao tentar excluir o equipamento.');
         }
 
         return true;
-
     }
 }

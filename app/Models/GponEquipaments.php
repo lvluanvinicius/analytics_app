@@ -3,25 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class GponEquipaments extends Model
 {
     use HasFactory;
-
-    /**
-     * Define a chave primária.
-     *
-     * @var string
-     */
-    protected $primaryKey = "_id";
-
-    /**
-     * Define a conexão para o modelo.
-     *
-     * @var string
-     */
-    protected $connection = 'mongodb';
 
     /**
      * Referencia qual a coleção de dados será utilizado dentro do modelo.
