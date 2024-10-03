@@ -3,7 +3,7 @@ import { api } from "@/services/axios";
 export interface EquipamentsProps {
     created_at: string;
     updated_at: string;
-    _id: string;
+    id: string;
     name: string;
     n_port: number;
 }

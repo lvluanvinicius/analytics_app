@@ -1,7 +1,7 @@
 import { api } from "../axios";
 
 export interface EquipamentsPortsProps {
-    _id: string;
+    id: string;
     port: string;
     equipament_id: string;
 }

@@ -29,6 +29,15 @@ class PortsController extends Controller
         $this->gponPortsRepository = $gponPortsRepository;
     }
 
+    /**
+     * Recupera as portas.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $equipament_name
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(\Illuminate\Http\Request $request, string $equipament_name): \Illuminate\Http\JsonResponse
     {
         try {
@@ -40,7 +49,7 @@ class PortsController extends Controller
             $equipament = $this->gponEquipamentsRepository->getEquipamentPerName($equipament_name);
 
             // // Recupera todas as portas relacionada ao equipamento encaminhado.
-            $ports = $this->gponPortsRepository->getPortsPerEquipamentIdSearch($params, $equipament->_id, $perPage);
+            $ports = $this->gponPortsRepository->getPortsPerEquipamentIdSearch($params, $equipament->id, $perPage);
 
             return $this->successResponse($ports, "Portas recuperadas com sucesso.");
         } catch (\App\Exceptions\Analytics\GponEquipamentsException $error) {
@@ -63,7 +72,7 @@ class PortsController extends Controller
             $equipament = $this->gponEquipamentsRepository->getEquipamentPerName($equipament_name);
 
             // // Recupera todas as portas relacionada ao equipamento encaminhado.
-            $ports = $this->gponPortsRepository->getPortsPerEquipamentId($equipament->_id);
+            $ports = $this->gponPortsRepository->getPortsPerEquipamentId($equipament->id);
 
             return $this->successResponse($ports, "Portas recuperadas com sucesso.");
         } catch (\App\Exceptions\Analytics\GponEquipamentsException $error) {

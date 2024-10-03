@@ -41,9 +41,9 @@ export function EquipamentsTable({ equipaments }: EquipamentsTableProps) {
                 </TableHeader>
                 <TableBody>
                     {equipaments.map((equipament) => (
-                        <TableRow key={equipament._id}>
+                        <TableRow key={equipament.id}>
                             <TableCell className="whitespace-nowrap border-b !py-1 font-medium ">
-                                {equipament._id}
+                                {equipament.id}
                             </TableCell>
                             <TableCell className="whitespace-nowrap border-b !py-1 font-medium ">
                                 {equipament.name}
@@ -62,7 +62,7 @@ export function EquipamentsTable({ equipaments }: EquipamentsTableProps) {
                             </TableCell>
                             <TableCell className="whitespace-nowrap border-b !py-1 font-medium ">
                                 <DeleteEquipaments
-                                    equipamentId={equipament._id}
+                                    equipamentId={equipament.id}
                                 />
                             </TableCell>
                         </TableRow>
