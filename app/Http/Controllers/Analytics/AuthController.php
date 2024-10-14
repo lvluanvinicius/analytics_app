@@ -27,6 +27,75 @@ class AuthController extends Controller
     }
 
     /**
+     * Efetua o login do usuário.
+     *
+     * @author Luan VP Santos <lvluansantos@gmail.com>
+     *
+     * @param \App\Http\Requests\Admin\SignInRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function signIn(\App\Http\Requests\Admin\SignInRequest $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // Autenticando o  usuário.
+            if (\Illuminate\Support\Facades\Auth::attempt([
+                'username' => $request->username,
+                'password' => $request->password,
+            ], $request->filled('remember'))) {
+
+                $request->session()->regenerate();
+
+                return $this->successResponse([
+                    'user' => null,
+                    'token' => \Illuminate\Support\Facades\Auth::user(),
+                ], "Usuário autenticado com sucesso.");
+            }
+
+            throw new \Exception('Usuário e/ou sernha estão incorretos.');
+
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Valida se um login está ativo.
+     *
+     * @author Luan VP Santos <lvluansantos@gmail.com>
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function validate(): \Illuminate\Http\JsonResponse
+    {
+        try {
+            return $this->successMessageResponse("Validação concluída.");
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Efetua o logout de um usuário.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function signOut(\Illuminate\Http\Request $request): \Illuminate\Http\JsonResponse
+    {
+        try {
+            // Limpa a sessão do usuário.
+            $request->session()->invalidate();
+
+            // Regenera o token da sessão para evitar ataques CSRF.
+            $request->session()->regenerateToken();
+
+            return $this->successMessageResponse("Validação concluída.");
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage(), \Illuminate\Http\Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
      * Efetua a autenticação de um usuário e retorna um token.
      *
      * @author Luan Santos <lvluansantos@gmail.com>
@@ -46,13 +115,18 @@ class AuthController extends Controller
             // Recuperando usuário para autenticação.
             $user = $this->userRepository->findByUsername($requestData['username']);
 
+            // Valida se o usuário foi localizado.
+            if (!$user) {
+                throw new \App\Exceptions\Analytics\AuthException("Usuário e/ou senha estão incorretos.");
+            }
+
             $user->tokens()->delete(); // Limpa os tokens (caso existam)
 
             // Validando dados.
             if (!$user || !password_verify($request->password, $user->password)) {
                 return response()->json([
-                    'message' => 'Credenciais inválidas',
-                ], 401);
+                    'message' => 'Usuário e/ou senha estão incorretos.',
+                ], 200);
             }
 
             // Criando novo token.

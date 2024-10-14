@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  analytics:
+    image: docker-registry.grupocednet.com.br/analytics-api:1.0.0
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - analyticsv:/var/www/html
+    networks:
+      - analytics_network
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - FTP_STORAGE_USERNAME=${FTP_STORAGE_USERNAME}
+      - FTP_STORAGE_PASSWORD=${FTP_STORAGE_PASSWORD}
+      - FTP_STORAGE_HOST=${FTP_STORAGE_HOST}
+      - FTP_STORAGE_PORT=${FTP_STORAGE_PORT}
+      - FTP_STORAGE_ROOT_PATH=${FTP_STORAGE_ROOT_PATH}
+      - APP_STORAGE_DIR=${APP_STORAGE_DIR}
+      - UPDATE_TIME_LOADS_ONUS=${UPDATE_TIME_LOADS_ONUS}
+      - DELETE_FILES_NUMBER=${DELETE_FILES_NUMBER}
+      - DAY_EXCLUDE=${DAY_EXCLUDE}
+      - PROXMOX_PVEAPITOKEN=${PROXMOX_PVEAPITOKEN}
+      - PROXMOX_SECRET=${PROXMOX_SECRET}
+      - ZABBIX_HOST=${ZABBIX_HOST}
+      - ZABBIX_USERNAME=${ZABBIX_USERNAME}
+      - ZABBIX_PASSWORD=${ZABBIX_PASSWORD}
+      - ZABBIX_PATH_API=${ZABBIX_PATH_API}
+      - ZABBIX_AUTH_TOKEN=${ZABBIX_AUTH_TOKEN}
+      - FILES_EXTENSIONS=${FILES_EXTENSIONS}
+      - DB_CONNECTION=mariadb
+      - DB_HOST=app_mariadb
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - APP_URL=${APP_URL}
+    depends_on:
+      - app_mariadb
+
+  nginx:
+    image: nginx:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - analyticsv:/var/www/html
+      - /home/luan/analytics_app/.docker/dev/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "9000:80"
+    networks:
+      - analytics_network
+    depends_on:
+      - analytics
+
+  app_mariadb:
+    image: mariadb:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - analyticsdata:/var/lib/mysql
+    networks:
+      - analytics_network
+    environment:
+      - MARIADB_ROOT_PASSWORD='@Bw37!Xy29%'
+      - MARIADB_DATABASE=analytics_db
+      - MARIADB_USER=analytics
+      - MARIADB_PASSWORD='@DitCD34a9'
+
+volumes:
+  analyticsv:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/luan/analytics_app/.docker/dev/www
+
+  analyticsdata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/luan/analytics_app/.docker/dev/data
+
+networks:
+  analytics_network:
+    driver: overlay
