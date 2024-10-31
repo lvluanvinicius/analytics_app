@@ -71,6 +71,10 @@ class PopsController extends Controller
             // Novo array para retorno com os dados separados.
             $newHosts = [];
             foreach ($zabbixData['result'] as $zbxData) {
+                if (count($zbxData['items']) <= 0) {
+                    continue;
+                }
+
                 array_push($newHosts, [
                     "host" => $zbxData['name'],
                     "location" => $zbxData['inventory']['location'],
