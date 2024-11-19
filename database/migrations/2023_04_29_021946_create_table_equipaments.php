@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('mongodb')->create('gpon_equipaments', function (Blueprint $table) {
+        Schema::create('gpon_equipaments', function (Blueprint $table) {
             $table->id();
 
             $table->string('name')->unique();

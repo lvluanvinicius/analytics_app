@@ -10,20 +10,31 @@ use App\Http\Controllers\Analytics\ProxmoxController;
 use App\Http\Controllers\Analytics\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('throttle:1000,1')->prefix('analytics')->group(function () {
+Route::middleware('throttle:1000,1')->prefix('analytics')->as('analytics.')->group(function () {
+    Route::post('/sign-in', [AuthController::class, 'signIn']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('user/create', [UserController::class, 'register']);
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/sign-in/validate', [AuthController::class, 'validate']);
         Route::post('/logout', [AuthController::class, 'logout']);
 
+        Route::prefix('users')->as('users.')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::post('/', [UserController::class, 'register'])->name('register');
+            Route::put('/{userid}', [UserController::class, 'update'])->name('update');
+            Route::delete('/{userid}', [UserController::class, 'destroy'])->name('destroy');
+        });
+
         Route::prefix('equipaments')->as('equipaments.')->group(function () {
-            Route::get('/', [EquipamentController::class, 'index'])->name('index');
+            Route::get('', [EquipamentController::class, 'index'])->name('index');
+            Route::get('get-all', [EquipamentController::class, 'all'])->name('all');
             Route::post('/', [EquipamentController::class, 'store'])->name('store');
+            Route::delete('/{equipamentId}', [EquipamentController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('ports')->as('ports.')->group(function () {
             Route::get('/{equipament_name}', [PortsController::class, 'index'])->name('index');
+            Route::get('/all/{equipament_name}', [PortsController::class, 'indexAll'])->name('index');
         });
 
         Route::prefix('onus')->as('onus.')->group(function () {

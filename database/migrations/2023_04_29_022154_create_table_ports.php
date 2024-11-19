@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::connection('mongodb')->create('gpon_ports', function (Blueprint $table) {
+        Schema::create('gpon_ports', function (Blueprint $table) {
             $table->id();
 
             $table->string('port');

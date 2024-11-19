@@ -17,6 +17,8 @@ class UserRegisterRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
@@ -28,15 +30,23 @@ class UserRegisterRequest extends FormRequest
             'email' => 'required|email|unique:users,email,except,id',
         ];
     }
+
+    /**
+     * Atualiza as mensagens de retorno padrão.
+     *
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @return array
+     */
     public function messages(): array
     {
         return [
-            'username.required' => 'required',
-            'username.unique' => 'unique',
-            'password.required' => 'required',
-            'name.required' => 'required',
-            'email.required' => 'required',
-            'email.unique' => 'unique',
+            'username.required' => 'O username é obrigatório.',
+            'username.unique' => 'O username informado já existe.',
+            'password.required' => 'O password é  obrigatório.',
+            'name.required' => 'O name é obrigatório.',
+            'email.required' => 'O email é obrigatório.',
+            'email.unique' => 'O email informado já existe.',
         ];
     }
 }
