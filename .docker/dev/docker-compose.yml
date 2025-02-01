@@ -1,0 +1,43 @@
+services:
+    analytics_database:
+        image: mysql:8.4
+        ports:
+            - "33061:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: analytics_database
+            MYSQL_USER: analytics_database
+            MYSQL_PASSWORD: analytics_database
+            MYSQL_DATABASE: analytics_database
+        volumes:
+            - analytics_database:/var/lib/mysql
+            - ../mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        networks:
+            - stack_food_network
+
+    analytics_devel:
+        image: stack-food:1.0
+        build:
+            context: ../../
+            dockerfile: .docker/dev/Dockerfile.dev
+            args:
+                NODE_VERSION: 22
+        volumes:
+            - ../../:/var/www/html
+        ports:
+            - "8002:8000"
+            - "5174:5174"
+        environment:
+            - APP_ENV=development
+            - NODE_ENV=development
+            - PHP_MEMORY_LIMIT=1024M
+        # command: php-fpm
+        command: sh -c "php artisan serve --host=0.0.0.0 --port=8000 & yarn dev"
+        networks:
+            - stack_food_network
+
+networks:
+    stack_food_network:
+        external: true
+
+volumes:
+    analytics_database:
