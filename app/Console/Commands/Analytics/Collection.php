@@ -47,41 +47,50 @@ class Collection extends Command
             $files = $conn->allFiles('/');
 
             if (count($files) <= 0) {
+                $this->info("Nenhum arquivo encontrado no FTP." . PHP_EOL);
                 exit(0);
             }
 
+            $files = array_reverse($files);
+
             foreach ($files as $file) {
                 try {
-                    $localPath = $directory . '/' . basename($file); // Usa apenas o nome do arquivo
+                    $localPath = $absoluteDirectory . '/' . basename($file); // Caminho absoluto
                     $this->readFile($conn, $file, $localPath);
                 } catch (\Exception $error) {
-                    dd($error);
+                    $this->error("Erro ao processar o arquivo {$file}: " . $error->getMessage());
                 }
 
                 break; // Remove após o debug
             }
         } catch (\Exception $error) {
-            dd($error);
+            $this->error("Erro no processo: " . $error->getMessage());
         }
     }
 
     public function readFile(Filesystem $conn, string $file, string $localPath)
     {
-        // Baixa o arquivo do FTP
-        $conn->get($file, $localPath);
-        $this->info("Arquivo {$file} baixado com sucesso." . PHP_EOL);
+        try {
+            // Baixa o arquivo do FTP
+            $this->info("Baixando arquivo {$file}..." . PHP_EOL);
+            $conn->get($file, $localPath);
 
-        // Verifica se o arquivo foi salvo corretamente
-        if (! file_exists($localPath)) {
-            $this->error("Arquivo {$localPath} não foi encontrado.");
-            return;
+            // Verifica se o arquivo foi salvo corretamente
+            if (! file_exists($localPath)) {
+                $this->error("Arquivo {$localPath} não foi encontrado após o download.");
+                return;
+            }
+
+            $this->info("Arquivo {$file} baixado com sucesso e salvo em {$localPath}." . PHP_EOL);
+
+            // Lê o arquivo CSV
+            $csv = Reader::createFromPath($localPath, 'r');
+            $csv->setHeaderOffset(0);
+            $this->info("Leitura do arquivo {$file} efetuada com sucesso." . PHP_EOL);
+
+            dd($csv);
+        } catch (\Exception $error) {
+            $this->error("Erro ao ler o arquivo {$file}: " . $error->getMessage());
         }
-
-        // Lê o arquivo CSV
-        $csv = Reader::createFromPath($localPath, 'r');
-        $csv->setHeaderOffset(0);
-        $this->info("Leitura do arquivo {$file} efetuada com sucesso." . PHP_EOL);
-
-        dd($csv);
     }
 }
