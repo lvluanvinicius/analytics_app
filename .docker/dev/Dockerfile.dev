@@ -20,12 +20,17 @@ RUN apt-get update && apt-get install -y \
     nano \
     iputils-ping \
     netcat-openbsd \
+    libssl-dev \
+    pkg-config \
     supervisor \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd zip pdo_mysql \
+    && docker-php-ext-install gd zip pdo_mysql ftp \
     && pecl install redis \
+    && pecl install mongodb \
     && docker-php-ext-enable redis \
+    && docker-php-ext-enable mongodb \
     && apt-get clean
+
 
 # Copiar configurações do Supervisor para o path de execução
 COPY .docker/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

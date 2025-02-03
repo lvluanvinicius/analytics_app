@@ -38,6 +38,12 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { auth } = usePage().props;
+
+    if (!auth) {
+        window.location.href = "/";
+        return;
+    }
+
     return (
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>

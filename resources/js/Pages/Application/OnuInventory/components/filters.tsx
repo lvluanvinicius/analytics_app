@@ -6,5 +6,4 @@ export function Filters() {
             <Button>Filtrar</Button>
         </form>
     );
-    f;
 }
