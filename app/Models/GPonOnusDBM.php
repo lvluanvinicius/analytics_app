@@ -8,6 +8,7 @@ class GPonOnusDBM extends Model
     protected $connection = 'mongodb';
     protected $collection = 'gpon_onus_dbm';
     protected $table      = 'gpon_onus_dbm';
+    public $timestamps    = false;
 
     protected $fillable = [
         'NAME',
