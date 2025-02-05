@@ -6,7 +6,7 @@ export interface ApiResponse<T> {
     last_page_url: string;
     links: {
         active: boolean;
-        label: string | number;
+        label: string;
         url: string;
     }[];
     next_page_url: string;

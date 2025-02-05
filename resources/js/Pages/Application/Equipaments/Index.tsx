@@ -1,9 +1,11 @@
-import DefaultLayout from "@/Layouts/admin";
 import { TableEquipaments } from "./components/table-equipaments";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { ApiResponse } from "@/types/api";
 import { EquipamentInterface } from "@/types/equipament";
+import { TablePaginate } from "@/components/application/table-paginate";
+import { Search } from "@/components/application/search";
+import AppPageHandler from "@/components/application/_page_handler";
 
 export default function Equipaments({
     equipaments,
@@ -13,20 +15,23 @@ export default function Equipaments({
     if (!equipaments) return null;
 
     return (
-        <DefaultLayout pageTitle="Equipamentos">
-            <div className="flex flex-col gap-4 items-center">
-                <div className="w-full md:max-w-[70vw]">
-                    <div className="py-4"></div>
-                    <div className="">
-                        <Link href={route("app.equipaments.create")}>
-                            <Button variant={"outline"} size={"sm"}>
-                                + Novo Equipamento
-                            </Button>
-                        </Link>
-                    </div>
-                    <TableEquipaments equipaments={equipaments.data} />
+        <AppPageHandler
+            pageTitle="Equipamentos"
+            actions={
+                <div className="flex items-center gap-2 md:flex-1">
+                    <Search />
+
+                    <Link href={route("app.equipaments.create")}>
+                        <Button variant={"outline"}>+ Novo Equipamento</Button>
+                    </Link>
                 </div>
-            </div>
-        </DefaultLayout>
+            }
+        >
+            <div className="flex items-center gap-2 mt-4"></div>
+
+            <TableEquipaments equipaments={equipaments.data} />
+
+            <TablePaginate paginate={equipaments} />
+        </AppPageHandler>
     );
 }

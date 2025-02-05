@@ -13,12 +13,12 @@ interface TableEquipamentsProps {
 export function TableEquipamentRow({ data }: TableEquipamentsProps) {
     return (
         <TableRow>
-            <TableCell>{data.id}</TableCell>
-            <TableCell>{data.name}</TableCell>
-            <TableCell>
+            <TableCell className="whitespace-nowrap">{data.id}</TableCell>
+            <TableCell className="whitespace-nowrap">{data.name}</TableCell>
+            <TableCell className="whitespace-nowrap">
                 <ViewPorts data={data} />
             </TableCell>
-            <TableCell>
+            <TableCell className="whitespace-nowrap">
                 <div className="flex items-center gap-2">
                     <Link href={route("app.equipaments.show", data.uuid)}>
                         <Button size={"icon"}>
@@ -32,7 +32,7 @@ export function TableEquipamentRow({ data }: TableEquipamentsProps) {
                         </Button>
                     </Link>
 
-                    <Delete />
+                    <Delete equipament={data.uuid} />
                 </div>
             </TableCell>
         </TableRow>

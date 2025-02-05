@@ -3,6 +3,7 @@ import {
     Dialog,
     DialogClose,
     DialogContent,
+    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -28,7 +29,7 @@ export function ViewPorts({ data }: TableEquipamentsProps) {
         queryFn: async function () {
             const response = await application.get<
                 ActionsResponse<EquipamentPortInterface[]>
-            >(`/equipament/${data.uuid}/ports`);
+            >(`/equipament/${data.name}/ports`);
 
             if (response.data) {
                 return response.data.data;
@@ -39,32 +40,39 @@ export function ViewPorts({ data }: TableEquipamentsProps) {
         enabled: !!open,
     });
 
-    if (!ports) {
-        return null;
-    }
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button size="icon">{data.n_port}</Button>
+                <Button size="sm">Portas</Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="md:max-h-[70vh]">
                 <DialogHeader>
-                    <DialogTitle>Todas as Portas</DialogTitle>
+                    <DialogTitle>Portas</DialogTitle>
+                    <DialogDescription>
+                        Esses dados seriam apenas para vizualização e filtros
+                        nos gráficos.
+                    </DialogDescription>
                 </DialogHeader>
 
-                <div>
-                    <ScrollArea>
-                        {ports.map(function (port, index) {
+                <ScrollArea className="md:h-[50vh] px-2">
+                    {ports ? (
+                        ports.map(function (port, index) {
                             return (
-                                <div className="border px-2 py-1 flex justify-between">
+                                <div
+                                    key={index}
+                                    className="border px-2 py-1 flex justify-between"
+                                >
                                     <span>{data.name}</span>
                                     <span>{port.port}</span>
                                 </div>
                             );
-                        })}
-                    </ScrollArea>
-                </div>
+                        })
+                    ) : (
+                        <span className="border px-2 py-1 flex justify-between">
+                            Nada a exibir
+                        </span>
+                    )}
+                </ScrollArea>
 
                 <DialogFooter>
                     <DialogClose asChild>

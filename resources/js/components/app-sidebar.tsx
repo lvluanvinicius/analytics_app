@@ -33,6 +33,23 @@ const data = {
                 },
             ],
         },
+
+        {
+            title: "Equipamentos",
+            url: "#",
+            icon: SquareTerminal,
+            isActive: true,
+            items: [
+                {
+                    title: "Listar",
+                    url: route("app.equipaments.index"),
+                },
+                {
+                    title: "Adicionar",
+                    url: route("app.equipaments.create"),
+                },
+            ],
+        },
     ],
 };
 
@@ -68,7 +85,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
+                <NavMain items={data.navMain} title="Inventory" />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser

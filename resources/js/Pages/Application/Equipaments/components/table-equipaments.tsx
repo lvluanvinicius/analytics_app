@@ -17,10 +17,10 @@ export function TableEquipaments({ equipaments }: TableEquipamentsProps) {
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Nome</TableCell>
-                    <TableCell>Portas</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell className="whitespace-nowrap">ID</TableCell>
+                    <TableCell className="whitespace-nowrap">Nome</TableCell>
+                    <TableCell className="whitespace-nowrap">Portas</TableCell>
+                    <TableCell className="whitespace-nowrap"></TableCell>
                 </TableRow>
             </TableHeader>
             <TableBody>

@@ -5,6 +5,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Application\EquipamentsCreateRequest;
 use App\Models\GponEquipaments;
 use App\Models\GponPorts;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -19,12 +22,29 @@ class EquipamentController extends Controller
         return Inertia::render('Application/Equipaments/Index', ['equipaments' => $records]);
     }
 
+    public function indexJson(Request $request): JsonResponse
+    {
+        try {
+            $params             = $request->only(['search']);
+            $params['fields']   = "id,uuid,name";
+            $params['paginate'] = 10;
+
+            $equipaments = $this->advancedQuery(GponEquipaments::query(), $params, [
+                'table' => 'gpon_equipaments',
+            ]);
+
+            return $this->successResponse($equipaments, 'Dados recuperados com sucesso.');
+        } catch (\Exception $error) {
+            return $this->errorResponse($error->getMessage());
+        }
+    }
+
     public function create(): InertiaResponse
     {
         return Inertia::render('Application/Equipaments/Create');
     }
 
-    public function store(EquipamentsCreateRequest $request)
+    public function store(EquipamentsCreateRequest $request): RedirectResponse
     {
         try {
             // Criando equipamentos.
@@ -57,22 +77,9 @@ class EquipamentController extends Controller
                 "success" => "Equipamento criado com sucesso.",
             ]);
         } catch (\Exception $error) {
-            dd($error);
-        }
-    }
-
-    public function ports(string $equipament) //: JsonResponse
-    {
-        try {
-            $gponEquipament = GponEquipaments::where('uuid', $equipament)->first();
-
-            if (! $gponEquipament) {
-                throw new \Exception('Equipamento não encontrado.');
-            }
-
-            return $this->successResponse($gponEquipament->ports, "Dados recuperados com sucesso.");
-        } catch (\Exception $error) {
-            return $this->errorResponse($error->getMessage());
+            return redirect()->back()->with([
+                "error" => $error->getMessage(),
+            ]);
         }
     }
 
