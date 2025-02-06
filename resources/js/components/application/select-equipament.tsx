@@ -72,7 +72,7 @@ export function SelectEquipament({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className={cn("justify-start", className)}
+                    className={cn("justify-start w-full ", className)}
                 >
                     {value
                         ? value

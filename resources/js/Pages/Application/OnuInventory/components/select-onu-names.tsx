@@ -5,39 +5,40 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { application } from "@/services/app";
 import { queryClient } from "@/services/queryClient";
 import { ActionsResponse } from "@/types/api";
-import { EquipamentPortInterface } from "@/types/equipament-port";
+import { GPonOnusDBMInterface } from "@/types/onu-names";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-export function SelectPort({
+export function SelectOnuNames({
     equipament,
+    port,
     value,
     changeValue,
     className,
     loadData,
 }: {
     equipament: string;
+    port: string;
     value: string;
     changeValue: (value: string) => void;
     className?: string;
-    loadData?: EquipamentPortInterface;
+    loadData?: GPonOnusDBMInterface;
 }) {
     const [open, setOpen] = useState<boolean>(false);
     const [search, setSearch] = useState<string>("");
-    const [selected, setSelected] = useState<EquipamentPortInterface | null>(
-        null
-    );
+    const [selected, setSelected] = useState<GPonOnusDBMInterface | null>(null);
 
-    const { data: ports, isLoading } = useQuery({
-        queryKey: ["equipament-ports", search],
+    const { data: onuNames, isLoading } = useQuery({
+        queryKey: ["onu-names", search],
         queryFn: async function () {
             const response = await application.get<
-                ActionsResponse<EquipamentPortInterface[]>
-            >(`/equipament/${equipament}/ports`, {
+                ActionsResponse<GPonOnusDBMInterface[]>
+            >(route("app.onu-names", [equipament, port.replaceAll("/", "-")]), {
                 params: {
                     search,
                 },
@@ -53,8 +54,8 @@ export function SelectPort({
     });
 
     async function handleSelect(item: string) {
-        if (ports) {
-            const it = ports.find((c) => c.port === item);
+        if (onuNames) {
+            const it = onuNames.find((c) => c.NAME === item);
 
             if (it) {
                 setSelected(it);
@@ -68,7 +69,7 @@ export function SelectPort({
     useEffect(
         function () {
             queryClient.invalidateQueries({
-                queryKey: ["equipament-ports"],
+                queryKey: ["onu-names"],
             });
         },
         [value]
@@ -79,16 +80,16 @@ export function SelectPort({
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
-                    className={cn("justify-start", className)}
+                    className={cn("justify-start ", className)}
                 >
                     {value
                         ? value
                         : selected
-                        ? selected.port
+                        ? selected.NAME
                         : "Selecione uma porta"}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="">
+            <PopoverContent className="min-w-[27rem]">
                 <div className="p-2">
                     <Input
                         placeholder="Buscar porta..."
@@ -102,28 +103,28 @@ export function SelectPort({
                                 Buscando...
                             </div>
                         )}
-                        {!isLoading && ports && ports.length === 0 && (
+                        {!isLoading && onuNames && onuNames.length === 0 && (
                             <div className="bg-secondary p-1 text-center text-muted-foreground">
                                 Nenhuma porta encontrada.
                             </div>
                         )}
 
-                        <div className="flex flex-col gap-2">
-                            {ports &&
-                                ports.map(function (port, index) {
+                        <ScrollArea className="h-44">
+                            {onuNames &&
+                                onuNames.map(function (onuName, index) {
                                     return (
                                         <div
                                             key={index}
                                             onClick={() =>
-                                                handleSelect(port.port)
+                                                handleSelect(onuName.NAME)
                                             }
-                                            className="flex w-full cursor-pointer items-center rounded-md bg-secondary py-2 pl-4"
+                                            className="flex text-xs mb-2 px-2 justify-center w-full cursor-pointer items-center rounded-md bg-secondary py-2 pl-4"
                                         >
-                                            {port.port}
+                                            {onuName.NAME}
                                         </div>
                                     );
                                 })}
-                        </div>
+                        </ScrollArea>
                     </div>
                 </div>
             </PopoverContent>

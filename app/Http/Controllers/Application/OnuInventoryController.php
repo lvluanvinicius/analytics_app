@@ -9,10 +9,41 @@ use Inertia\Response as InertiaResponse;
 
 class OnuInventoryController extends Controller
 {
-    public function index(): InertiaResponse
+    public function index(Request $request): InertiaResponse
     {
         try {
-            return Inertia::render('Application/OnuInventory/Index');
+            $timeFromString = '';
+            $timeToString   = '';
+
+            if (! $request->has('timeFrom')) {
+                $currentDate    = new \DateTime();
+                $timeFromString = $currentDate->modify('-3hour')->format('Y-m-d H:i:s');
+            } else {
+                $timeFromString = str_replace('_', ':', $request->timeFrom);
+            }
+
+            if (! $request->has('timeTo')) {
+                $currentDate  = new \DateTime();
+                $timeToString = $currentDate->format('Y-m-d H:i:s');
+            } else {
+                $timeToString = str_replace('_', ':', $request->timeTo);
+            }
+
+            $params = $request->query();
+
+            $equipament = $params["equipament"];
+            $port       = $params["port"];
+
+            // Realizando a consulta no MongoDB
+            $records = GPonOnusDBM::where('DEVICE', $equipament)
+                ->where('PORT', $port)
+                ->where('COLLECTION_DATE', '>=', $timeFromString)
+                ->where('COLLECTION_DATE', '<=', $timeToString)
+                ->orderBy('COLLECTION_DATE', 'desc')
+                ->select('COLLECTION_DATE', 'RXDBM', 'TXDBM', )
+                ->get();
+
+            return Inertia::render('Application/OnuInventory/Index', ['records' => $records]);
         } catch (\Exception $error) {
             dd($error);
         }
@@ -32,8 +63,8 @@ class OnuInventoryController extends Controller
             }
 
             if (! $request->has('timeTo')) {
-                $currentDate    = new \DateTime();
-                $timeFromString = $currentDate->modify('-3hour')->format('Y-m-d H:i:s');
+                $currentDate  = new \DateTime();
+                $timeToString = $currentDate->format('Y-m-d H:i:s');
             } else {
                 $timeToString = str_replace('_', ':', $request->timeTo);
             }

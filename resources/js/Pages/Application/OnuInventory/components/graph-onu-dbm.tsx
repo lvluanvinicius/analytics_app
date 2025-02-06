@@ -6,6 +6,7 @@ import {
     CartesianGrid,
     XAxis,
     ResponsiveContainer,
+    YAxis,
 } from "recharts";
 import {
     Card,
@@ -23,15 +24,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const collections = [
-    { COLLECTION_DATE: "01/02/2025 05:00:20", RXDBM: 186, TXDBM: 80 },
-    { COLLECTION_DATE: "01/02/2025 07:00:20", RXDBM: 305, TXDBM: 200 },
-    { COLLECTION_DATE: "01/02/2025 08:00:20", RXDBM: 237, TXDBM: 120 },
-    { COLLECTION_DATE: "01/02/2025 09:00:20", RXDBM: 73, TXDBM: 190 },
-    { COLLECTION_DATE: "01/02/2025 10:00:20", RXDBM: 209, TXDBM: 130 },
-    { COLLECTION_DATE: "01/02/2025 11:00:20", RXDBM: 214, TXDBM: 140 },
-];
+import { GPonOnusDBMInterface } from "@/types/onu-names";
 
 const chartConfig = {
     desktop: {
@@ -44,7 +37,11 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export function GraphOnuDBM() {
+export function GraphOnuDBM({
+    collections,
+}: {
+    collections: GPonOnusDBMInterface[];
+}) {
     return (
         <Card className="w-full mx-auto">
             <CardHeader>
@@ -71,6 +68,11 @@ export function GraphOnuDBM() {
                                 axisLine={false}
                                 tickMargin={8}
                                 tickFormatter={(value) => value.slice(0, 3)}
+                            />
+                            <YAxis
+                                domain={[-50, 50]} // Ajuste o domínio conforme seus dados
+                                tickLine={false}
+                                axisLine={false}
                             />
                             <ChartTooltip
                                 cursor={false}

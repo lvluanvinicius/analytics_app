@@ -78,12 +78,11 @@ class Collection extends Command
                         $this->info("Finalizada a remoção do arquivo {$file}." . PHP_EOL);
                     }
 
-                    exit();
                 } catch (\Exception $error) {
                     $this->error("Erro ao processar o arquivo {$file}: " . $error->getMessage() . PHP_EOL);
                 }
 
-                break; // Remove após o debug
+                // break; // Remove após o debug
             }
         } catch (\Exception $error) {
             $this->error("Erro no processo: " . $error->getMessage() . PHP_EOL);
