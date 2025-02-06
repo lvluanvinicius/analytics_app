@@ -30,6 +30,9 @@ class Collection extends Command
     public function handle()
     {
         try {
+            $this->info("Tarefa simulada FTP." . PHP_EOL);
+            exit(0);
+
             $directory         = 'inventory-onu';
             $absoluteDirectory = storage_path('app/' . $directory);
 
@@ -47,8 +50,6 @@ class Collection extends Command
                 $this->info("Nenhum arquivo encontrado no FTP." . PHP_EOL);
                 exit(0);
             }
-
-            $files = array_reverse($files);
 
             foreach ($files as $file) {
                 try {
@@ -82,7 +83,6 @@ class Collection extends Command
                     $this->error("Erro ao processar o arquivo {$file}: " . $error->getMessage() . PHP_EOL);
                 }
 
-                // break; // Remove após o debug
             }
         } catch (\Exception $error) {
             $this->error("Erro no processo: " . $error->getMessage() . PHP_EOL);

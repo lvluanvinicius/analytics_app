@@ -30,7 +30,7 @@ export function SelectOnuNames({
     loadData?: GPonOnusDBMInterface;
 }) {
     const [open, setOpen] = useState<boolean>(false);
-    const [search, setSearch] = useState<string>("");
+    const [search, setSearch] = useState<string | null>(null);
     const [selected, setSelected] = useState<GPonOnusDBMInterface | null>(null);
 
     const { data: onuNames, isLoading } = useQuery({
@@ -72,7 +72,7 @@ export function SelectOnuNames({
                 queryKey: ["onu-names"],
             });
         },
-        [value]
+        [value, port, equipament]
     );
 
     return (
@@ -86,14 +86,14 @@ export function SelectOnuNames({
                         ? value
                         : selected
                         ? selected.NAME
-                        : "Selecione uma porta"}
+                        : "Selecione uma onu"}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="min-w-[27rem]">
                 <div className="p-2">
                     <Input
-                        placeholder="Buscar porta..."
-                        value={search}
+                        placeholder="Buscar onu..."
+                        value={search || ""}
                         onChange={(e) => setSearch(e.currentTarget.value)}
                     />
 
@@ -105,7 +105,7 @@ export function SelectOnuNames({
                         )}
                         {!isLoading && onuNames && onuNames.length === 0 && (
                             <div className="bg-secondary p-1 text-center text-muted-foreground">
-                                Nenhuma porta encontrada.
+                                Nenhuma onu encontrada.
                             </div>
                         )}
 

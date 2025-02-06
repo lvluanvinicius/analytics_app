@@ -28,11 +28,11 @@ import { GPonOnusDBMInterface } from "@/types/onu-names";
 
 const chartConfig = {
     desktop: {
-        label: "Desktop",
+        label: "TXDBM",
         color: "hsl(var(--chart-1))",
     },
     mobile: {
-        label: "Mobile",
+        label: "RXDBM",
         color: "hsl(var(--chart-2))",
     },
 } satisfies ChartConfig;
@@ -61,12 +61,52 @@ export function GraphOnuDBM({
                                 right: 12,
                             }}
                         >
+                            <defs>
+                                <linearGradient
+                                    id="fillDesktop"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="5%"
+                                        stopColor="var(--color-desktop)"
+                                        stopOpacity={0.8}
+                                    />
+                                    <stop
+                                        offset="95%"
+                                        stopColor="var(--color-desktop)"
+                                        stopOpacity={0.1}
+                                    />
+                                </linearGradient>
+                                <linearGradient
+                                    id="fillMobile"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="1"
+                                >
+                                    <stop
+                                        offset="5%"
+                                        stopColor="var(--color-mobile)"
+                                        stopOpacity={0.8}
+                                    />
+                                    <stop
+                                        offset="95%"
+                                        stopColor="var(--color-mobile)"
+                                        stopOpacity={0.1}
+                                    />
+                                </linearGradient>
+                            </defs>
+
                             <CartesianGrid vertical={false} />
                             <XAxis
                                 dataKey="COLLECTION_DATE"
                                 tickLine={false}
                                 axisLine={false}
                                 tickMargin={8}
+                                minTickGap={collections.length}
                                 tickFormatter={(value) => value.slice(0, 3)}
                             />
                             <YAxis
@@ -81,14 +121,6 @@ export function GraphOnuDBM({
                                 }
                             />
                             <Area
-                                dataKey="RXDBM"
-                                type="natural"
-                                fill="var(--color-mobile)"
-                                fillOpacity={0.4}
-                                stroke="var(--color-mobile)"
-                                stackId="a"
-                            />
-                            <Area
                                 dataKey="TXDBM"
                                 type="natural"
                                 fill="var(--color-desktop)"
@@ -96,6 +128,15 @@ export function GraphOnuDBM({
                                 stroke="var(--color-desktop)"
                                 stackId="a"
                             />
+                            <Area
+                                dataKey="RXDBM"
+                                type="natural"
+                                fill="var(--color-mobile)"
+                                fillOpacity={0.4}
+                                stroke="var(--color-mobile)"
+                                stackId="a"
+                            />
+
                             <ChartLegend content={<ChartLegendContent />} />
                         </AreaChart>
                     </ResponsiveContainer>

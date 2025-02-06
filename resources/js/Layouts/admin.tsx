@@ -2,6 +2,7 @@ import { SidebarInset, SidebarProvider } from "../components/ui/sidebar";
 import { AppSidebar } from "../components/app-sidebar";
 import { ReactNode } from "react";
 import { Head } from "@inertiajs/react";
+import { SidebarHeader } from "@/components/sidebar-header";
 
 export default function DefaultLayout({
     children,
@@ -16,7 +17,7 @@ export default function DefaultLayout({
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset className="overflow-y-auto">
-                    {/* <Navbar /> */}
+                    <SidebarHeader />
                     <main className="px-8 py-4">{children}</main>
                 </SidebarInset>
             </SidebarProvider>

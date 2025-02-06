@@ -31,8 +31,8 @@ class OnuInventoryController extends Controller
 
             $params = $request->query();
 
-            $equipament = $params["equipament"];
-            $port       = $params["port"];
+            $equipament = array_key_exists('equipament', $params) ? $params["equipament"] : null;
+            $port       = array_key_exists('port', $params) ? $params["port"] : null;
 
             // Realizando a consulta no MongoDB
             $records = GPonOnusDBM::where('DEVICE', $equipament)

@@ -35,6 +35,16 @@ services:
         networks:
             - stack_food_network
 
+    analytics_worker:
+        build:
+            context: ../../
+            dockerfile: .docker/dev/Dockerfile.worker
+        volumes:
+            - ../../:/var/www/html
+        networks:
+            - stack_food_network
+        command: php artisan queue:work
+
 networks:
     stack_food_network:
         external: true
