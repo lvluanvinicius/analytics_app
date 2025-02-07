@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     build-essential \
     unzip \
-    git \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -55,7 +54,7 @@ WORKDIR /var/www/html
 RUN yarn install
 
 # Copiando entrypoint
-COPY .docker/dev/entrypoint.sh /entrypoint.sh
+COPY .docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Executando entrypoint

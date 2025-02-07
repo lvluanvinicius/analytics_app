@@ -15,7 +15,7 @@ services:
             - stack_food_network
 
     analytics_devel:
-        image: stack-food:1.0
+        image: analytics-api:1.0
         build:
             context: ../../
             dockerfile: .docker/dev/Dockerfile.dev
@@ -35,15 +35,15 @@ services:
         networks:
             - stack_food_network
 
-    analytics_worker:
+    analytics_scheduler:
+        image: analytics-api:1.0
         build:
             context: ../../
-            dockerfile: .docker/dev/Dockerfile.worker
+            dockerfile: .docker/dev/Dockerfile.scheduler
         volumes:
             - ../../:/var/www/html
         networks:
             - stack_food_network
-        command: php artisan queue:work
 
 networks:
     stack_food_network:

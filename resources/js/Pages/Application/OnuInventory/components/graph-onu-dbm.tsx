@@ -14,7 +14,6 @@ import {
     CardDescription,
     CardHeader,
     CardTitle,
-    CardFooter,
 } from "@/components/ui/card";
 import {
     ChartConfig,
@@ -46,9 +45,7 @@ export function GraphOnuDBM({
         <Card className="w-full mx-auto">
             <CardHeader>
                 <CardTitle>Histórico e DBM</CardTitle>
-                <CardDescription>
-                    Cliente ONU Nome: CX01H-18553-Maria_Lucia_Ferrari
-                </CardDescription>
+                <CardDescription></CardDescription>
             </CardHeader>
             <CardContent className="h-[15rem] sm:h-[20rem]">
                 <ChartContainer config={chartConfig} className="w-full h-full">

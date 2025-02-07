@@ -1,0 +1,50 @@
+# Use a imagem base PHP 8.3 com FPM
+FROM php:8.3-fpm
+
+# Argumento para configurar a versão do Node.js
+ARG NODE_VERSION=22
+
+# Atualize os pacotes e instale dependências básicas
+RUN apt-get update && apt-get install -y \
+    curl \
+    gnupg \
+    build-essential \
+    unzip \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    net-tools \
+    zip \
+    cron \
+    nano \
+    iputils-ping \
+    netcat-openbsd \
+    libssl-dev \
+    pkg-config \
+    supervisor \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip pdo_mysql ftp \
+    && pecl install redis \
+    && pecl install mongodb \
+    && docker-php-ext-enable redis \
+    && docker-php-ext-enable mongodb \
+    && apt-get clean
+
+
+# Instala o Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Define o diretório de trabalho
+WORKDIR /var/www/html
+
+# Cria um diretório para logs
+RUN mkdir -p /var/log/cron
+
+# Configura o Cron para redirecionar a saída para um arquivo de log
+RUN echo "* * * * * /usr/local/bin/php /var/www/html/artisan collection:run >> /var/log/cron/scheduler.log 2>&1" > /etc/cron.d/scheduler
+RUN chmod 0644 /etc/cron.d/scheduler
+RUN crontab /etc/cron.d/scheduler
+
+# Inicia o Cron em segundo plano
+CMD ["cron", "-f"]

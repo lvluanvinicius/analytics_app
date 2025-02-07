@@ -30,9 +30,6 @@ class Collection extends Command
     public function handle()
     {
         try {
-            $this->info("Tarefa simulada FTP." . PHP_EOL);
-            exit(0);
-
             $directory         = 'inventory-onu';
             $absoluteDirectory = storage_path('app/' . $directory);
 
