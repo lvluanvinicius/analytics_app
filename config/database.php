@@ -112,18 +112,6 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
-        // 'mongodb' => [
-        //     'driver'   => 'mongodb',
-        //     'dsn'      => env('MONGODB_URI', 'mongodb://localhost:27017'),
-        //     'database' => env('MONGODB_DATABASE', 'laravel_app'),
-        //     'username' => env('MONGODB_USERNAME', ''),
-        //     'password' => env('MONGODB_PASSWORD', ''),
-        //     'options'  => [
-        //         'ssl'              => false,
-        //         'directConnection' => true,
-        //     ],
-        // ],
-
         'mongodb' => [
             'driver'   => 'mongodb',
             'dsn'      => env('MONGODB_URI'),

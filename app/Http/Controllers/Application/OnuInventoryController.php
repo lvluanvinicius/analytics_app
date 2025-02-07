@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Application;
 use App\Http\Controllers\Controller;
 use App\Models\GPonOnusDBM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
 
@@ -34,18 +35,31 @@ class OnuInventoryController extends Controller
             $equipament = array_key_exists('equipament', $params) ? $params["equipament"] : null;
             $port       = array_key_exists('port', $params) ? $params["port"] : null;
 
-            // Realizando a consulta no MongoDB
-            $records = GPonOnusDBM::where('DEVICE', $equipament)
-                ->where('PORT', $port)
-                ->where('COLLECTION_DATE', '>=', $timeFromString)
-                ->where('COLLECTION_DATE', '<=', $timeToString)
-                ->orderBy('COLLECTION_DATE', 'desc')
-                ->select('COLLECTION_DATE', 'RXDBM', 'TXDBM', )
-                ->get();
+            $cacheKey = $this->generateCacheKey($params, [$timeFromString, $timeToString]);
 
+            $records = [];
+
+            // Verifica se os dados estão em cache.
+            if (Cache::has($cacheKey)) {
+                $records = Cache::get($cacheKey);
+            } else {
+                // Realizando a consulta no MongoDB
+                $records = GPonOnusDBM::where('DEVICE', $equipament)
+                    ->where('PORT', $port)
+                    ->where('COLLECTION_DATE', '>=', $timeFromString)
+                    ->where('COLLECTION_DATE', '<=', $timeToString)
+                    ->orderBy('COLLECTION_DATE', 'asc')
+                    ->get();
+
+                // Armazena o resultado no cache.
+                Cache::put($cacheKey, $records, 3600);
+
+            }
             return Inertia::render('Application/OnuInventory/Index', ['records' => $records]);
         } catch (\Exception $error) {
-            dd($error);
+            return to_route('app.onu-nventory')->with([
+                "error" => $error->getMessage(),
+            ]);
         }
     }
 
@@ -57,7 +71,7 @@ class OnuInventoryController extends Controller
 
             if (! $request->has('timeFrom')) {
                 $currentDate    = new \DateTime();
-                $timeFromString = $currentDate->modify('-3hour')->format('Y-m-d H:i:s');
+                $timeFromString = $currentDate->modify('-1hour')->format('Y-m-d H:i:s');
             } else {
                 $timeFromString = str_replace('_', ':', $request->timeFrom);
             }
@@ -71,19 +85,32 @@ class OnuInventoryController extends Controller
 
             $params = $request->query();
 
-            $equipament = $params["equipament"];
-            $port       = $params["port"];
+            $equipament = array_key_exists('equipament', $params) ? $params["equipament"] : null;
+            $port       = array_key_exists('port', $params) ? $params["port"] : null;
 
-            // Realizando a consulta no MongoDB
-            $records = GPonOnusDBM::where('DEVICE', $equipament)
-                ->where('PORT', $port)
-                ->where('COLLECTION_DATE', '>=', $timeFromString)
-                ->where('COLLECTION_DATE', '<=', $timeToString)
-                ->orderBy('COLLECTION_DATE', 'desc')
-                ->select('COLLECTION_DATE')
-                ->get();
+            $cacheKey = $this->generateCacheKey($params, [$timeFromString, $timeToString]);
 
-            dd($records);
+            $records = [];
+
+            // Verifica se os dados estão em cache.
+            if (Cache::has($cacheKey)) {
+                $records = Cache::get($cacheKey);
+            } else {
+
+                // Realizando a consulta no MongoDB
+                $records = GPonOnusDBM::where('DEVICE', $equipament)
+                    ->where('PORT', $port)
+                    ->where('COLLECTION_DATE', '>=', $timeFromString)
+                    ->where('COLLECTION_DATE', '<=', $timeToString)
+                    ->orderBy('COLLECTION_DATE', 'desc')
+                    ->get();
+
+                // Armazena o resultado no cache.
+                Cache::put($cacheKey, $records, 3600);
+
+            }
+
+            return $this->successResponse($records, 'Dados recuperados com sucesso.');
         } catch (\Exception $error) {
             return $this->errorResponse($error->getMessage());
         }

@@ -41,6 +41,22 @@ export function GraphOnuDBM({
 }: {
     collections: GPonOnusDBMInterface[];
 }) {
+    if (collections.length <= 0) {
+        return (
+            <Card className="w-full mx-auto">
+                <CardHeader>
+                    <CardTitle>Histórico e DBM</CardTitle>
+                    <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent className="h-[15rem] sm:h-[20rem] flex justify-center items-center">
+                    <p className="text-muted-foreground text-xl">
+                        Nenhum registro carregado
+                    </p>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <Card className="w-full mx-auto">
             <CardHeader>
