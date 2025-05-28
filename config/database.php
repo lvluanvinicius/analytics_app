@@ -113,16 +113,16 @@ return [
         ],
 
         'mongodb' => [
-            'driver'   => 'mongodb',
-            'dsn'      => env('MONGODB_URI'),
-            'database' => env('MONGODB_DATABASE', 'potencia'),
-            'username' => env('MONGODB_USERNAME', 'root'),
-            'password' => env('MONGODB_PASSWORD', 'sua-senha'),
-            'options'  => [
-                'ssl'              => false,
-                'directConnection' => true,
-                'authSource'       => 'admin',
-            ],
+            'driver' => 'mongodb',
+            'dsn'    => env('MONGODB_URI'),
+            // 'database' => env('MONGODB_DATABASE', 'potencia'),
+            // 'username' => env('MONGODB_USERNAME', 'root'),
+            // 'password' => env('MONGODB_PASSWORD', 'sua-senha'),
+            // 'options'  => [
+            //     'ssl'              => false,
+            //     'directConnection' => true,
+            //     'authSource'       => 'admin',
+            // ],
         ],
 
     ],

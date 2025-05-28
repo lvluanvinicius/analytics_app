@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Application;
 
 use App\Http\Controllers\Controller;
 use App\Models\GPonOnusDBM;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -10,7 +11,7 @@ use Inertia\Response as InertiaResponse;
 
 class OnuInventoryController extends Controller
 {
-    public function index(Request $request): InertiaResponse
+    public function index(Request $request): InertiaResponse | RedirectResponse
     {
         try {
             $timeFromString = '';
@@ -57,6 +58,7 @@ class OnuInventoryController extends Controller
             }
             return Inertia::render('Application/OnuInventory/Index', ['records' => $records]);
         } catch (\Exception $error) {
+            dd($error);
             return to_route('app.onu-nventory')->with([
                 "error" => $error->getMessage(),
             ]);
