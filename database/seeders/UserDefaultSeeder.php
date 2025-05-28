@@ -13,9 +13,9 @@ class UserDefaultSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'email'    => 'admin@admin.com',
+            'email'    => 'admin@grupocednet.com.br',
             'password' => Hash::make('password'),
-            'name'     => 'Luan Santos',
+            'name'     => 'Administrador Padrão',
         ]);
     }
 }

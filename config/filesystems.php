@@ -66,9 +66,9 @@ return [
             'username' => env('FTP_USERNAME'),
             'password' => env('FTP_PASSWORD'),
             'port'     => env('FTP_PORT', 21),
-            'root'     => env('FTP_ROOT', ''),
-            'passive'  => true, // Modo passivo (opcional)
-            'ssl'      => true, // Usar SSL (opcional)
+            'root'     => env('FTP_ROOT', '/'),
+            'passive'  => true,                 // Modo passivo (opcional)
+            'ssl'      => env('FTP_SSL', true), // Usar SSL (opcional)
             'timeout'  => 30,
         ],
     ],
