@@ -1,10 +1,10 @@
 services:
-    integrations:
+    analytics:
         image: docker-registry.grupocednet.com.br/analytics-api:1.0.0-stable
         build:
             dockerfile: Dockerfile
             args:
-                - GIT_VERSION=feature-v1.1.5
+                - GIT_VERSION=analytics_2
                 - APP_NAME='Analytics Api'
             ssh:
                 - default
@@ -42,12 +42,12 @@ services:
     analytics_redis:
         image: redis:alpine
         networks:
-            - stack_food_network
+            - traefik_public
         command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
         ports:
             - 6350:6379
         volumes:
-            - analytics_database_cache:/data
+            - redis:/data
 
 networks:
     traefik_public:
@@ -57,7 +57,8 @@ volumes:
     storage_data:
         driver: local
     cache_data:
-        driver: local
+        driver: loca
+    redis:
 
 secrets:
     ssh_key:
