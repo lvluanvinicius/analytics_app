@@ -115,7 +115,6 @@ EXPOSE 80
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 ENTRYPOINT ["/entrypoint.sh"]
-# CMD ["nginx", "-g", "daemon off;"]
 
 # Entry point via Supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
