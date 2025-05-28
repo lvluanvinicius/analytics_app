@@ -20,7 +20,7 @@ services:
             - APP_NAME='Analytics Api'
             - APP_DEBUG=true
             - APP_TIMEZONE=America/Sao_Paulo
-            - APP_URL=https://gc-integrations.grupocednet.com.br
+            - APP_URL=https://analytics.grupocednet.com.br
 
             - PHP_MAX_EXECUTION_TIME=60
             - PHP_MAX_INPUT_TIME=60
