@@ -84,7 +84,6 @@ class CreateDataFilters implements ShouldQueue
             Log::info('Dados auxiliares carregados com sucesso.');
 
         } catch (\Exception $error) {
-            dd($error);
             Log::error("Erro no Job de criação dos dados auxiliares: " . $error->getMessage() . PHP_EOL);
         }
     }
