@@ -35,7 +35,7 @@ class Collection extends Command
 
             // Verifica se o diretório existe; se não, cria o diretório
             if (! file_exists($absoluteDirectory)) {
-                mkdir($absoluteDirectory, 0755, true); // Cria o diretório com permissões 0755
+                mkdir($absoluteDirectory, 0755, true);
                 $this->info("Diretório '$directory' criado com sucesso!" . PHP_EOL);
             }
 

@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Support\Facades\Artisan;
+// Artisan::command('schedule:run-register', function (Schedule $schedule) {
+//     $schedule->command('collection:run')->everyFifteenMinutes();
+// })->purpose('Executa a coleta de dados de ONUs gerados pelo export do DMView Datacom.');
 
-Artisan::command('schedule:run-register', function (Schedule $schedule) {
-    // Agendar o comando collection:run a cada 15 minutos
-    // $schedule->command('collection:run')->everyMinute(); //->everyFifteenMinutes();
-})->purpose('Executa a coleta de dados de ONUs gerados pelo export do DMView Datacom.');
+use App\Console\Commands\Analytics\Collection;
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command(Collection::class)->everyMinute(); //everyFifteenMinutes();
