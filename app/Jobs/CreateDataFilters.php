@@ -42,42 +42,64 @@ class CreateDataFilters implements ShouldQueue
             $customerDevice = [];
 
             foreach ($devices as $device) {
-                foreach ($customers as $customer) {
-                    # code...
-                    if (! in_array($customer, $customerDevice)) {
-                        array_push($customerDevice, [
-                            'DEVICE' => $device,
-                            'NAME'   => $customer,
-                        ]);
+                try {
+                    foreach ($customers as $customer) {
+                        # code...
+                        if (! in_array($customer, $customerDevice)) {
+                            array_push($customerDevice, [
+                                'DEVICE' => $device,
+                                'NAME'   => $customer,
+                            ]);
+                        }
                     }
+                } catch (\Exception $error) {
+                    Log::error("Erro CreateDataFilters: [prepare:customerDevice] " . $error->getMessage() . PHP_EOL);
                 }
             }
 
             foreach ($customerDevice as $cd) {
-                $newCd = new CustomerDevice($cd);
-                if (! $newCd->where('DEVICE', $cd['DEVICE'])->where('NAME', $cd['NAME'])->exists()) {
-                    $newCd->save();
+                try {
+                    $newCd = new CustomerDevice($cd);
+
+                    if (! $newCd->where('DEVICE', $cd['DEVICE'])->where('NAME', $cd['NAME'])->exists()) {
+                        $newCd->save();
+                    }
+
+                } catch (\Exception $error) {
+                    Log::error("Erro CreateDataFilters: [customerDevice] " . $error->getMessage() . PHP_EOL);
                 }
             }
 
             foreach ($customers as $customer) {
-                $newCustomer = new Customer(['NAME' => $customer]);
-                if (! $newCustomer->where('NAME', $customer)->exists()) {
-                    $newCustomer->save();
+                try {
+                    $newCustomer = new Customer(['NAME' => $customer]);
+                    if (! $newCustomer->where('NAME', $customer)->exists()) {
+                        $newCustomer->save();
+                    }
+                } catch (\Exception $error) {
+                    Log::error("Erro CreateDataFilters: [customers] " . $error->getMessage() . PHP_EOL);
                 }
             }
 
             foreach ($devices as $device) {
-                $newDevice = new Device(['DEVICE' => $device]);
-                if (! $newDevice->where('DEVICE', $device)->exists()) {
-                    $newDevice->save();
+                try {
+                    $newDevice = new Device(['DEVICE' => $device]);
+                    if (! $newDevice->where('DEVICE', $device)->exists()) {
+                        $newDevice->save();
+                    }
+                } catch (\Exception $error) {
+                    Log::error("Erro CreateDataFilters: [devices] " . $error->getMessage() . PHP_EOL);
                 }
             }
 
             foreach ($ports as $port) {
-                $newPort = new Port(['PORT' => $port]);
-                if (! $newPort->where('PORT', $port)->exists()) {
-                    $newPort->save();
+                try {
+                    $newPort = new Port(['PORT' => $port]);
+                    if (! $newPort->where('PORT', $port)->exists()) {
+                        $newPort->save();
+                    }
+                } catch (\Exception $error) {
+                    Log::error("Erro CreateDataFilters: [ports] " . $error->getMessage() . PHP_EOL);
                 }
             }
 
