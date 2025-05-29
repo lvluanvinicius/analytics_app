@@ -1,6 +1,6 @@
 services:
     analytics:
-        image: docker-registry.grupocednet.com.br/analytics-api:1.0.0-stable
+        image: docker-registry.grupocednet.com.br/analytics-api:1.0.1-stable
         build:
             dockerfile: Dockerfile
             args:
