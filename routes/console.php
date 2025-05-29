@@ -7,4 +7,4 @@
 use App\Console\Commands\Analytics\Collection;
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command(Collection::class)->everyFifteenMinutes();
+Schedule::command(Collection::class)->everyMinute(); //everyFifteenMinutes();

@@ -1,6 +1,7 @@
 <?php
 namespace App\Console\Commands\Analytics;
 
+use App\Jobs\CreateDataFilters;
 use App\Models\GPonOnusDBM;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -206,6 +207,9 @@ class Collection extends Command
 
             foreach (array_chunk($data, $chunkSize) as $insert) {
                 $gponOnusDBM->insert($insert);
+
+                // Criar ports, devices, customers e customersDevices.
+                CreateDataFilters::dispatch($insert);
             }
 
             return true;
@@ -214,4 +218,5 @@ class Collection extends Command
             return false;
         }
     }
+
 }
