@@ -50,7 +50,7 @@ export function SelectEquipament({
 
     async function handleSelect(item: string) {
         if (equipaments) {
-            const it = equipaments.find((c) => c.name === item);
+            const it = equipaments.find((c) => c.DEVICE === item);
 
             if (it) {
                 setSelected(it);
@@ -77,7 +77,7 @@ export function SelectEquipament({
                     {value
                         ? value
                         : selected
-                        ? selected.name
+                        ? selected.DEVICE
                         : "Selecione um equipamento"}
                 </Button>
             </PopoverTrigger>
@@ -110,11 +110,11 @@ export function SelectEquipament({
                                         <div
                                             key={index}
                                             onClick={() =>
-                                                handleSelect(equipament.name)
+                                                handleSelect(equipament.DEVICE)
                                             }
                                             className="flex w-full cursor-pointer items-center rounded-md bg-secondary py-2 pl-4"
                                         >
-                                            {equipament.name}
+                                            {equipament.DEVICE}
                                         </div>
                                     );
                                 })}

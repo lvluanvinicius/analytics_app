@@ -9,21 +9,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { application } from "@/services/app";
 import { queryClient } from "@/services/queryClient";
-import { ActionsResponse } from "@/types/api";
+import { ActionsResponse, ApiResponse } from "@/types/api";
 import { GPonOnusDBMInterface } from "@/types/onu-names";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export function SelectOnuNames({
-    equipament,
-    port,
     value,
     changeValue,
     className,
     loadData,
 }: {
-    equipament: string;
-    port: string;
     value: string;
     changeValue: (value: string) => void;
     className?: string;
@@ -37,15 +33,15 @@ export function SelectOnuNames({
         queryKey: ["onu-names", search],
         queryFn: async function () {
             const response = await application.get<
-                ActionsResponse<GPonOnusDBMInterface[]>
-            >(route("app.onu-names", [equipament, port.replaceAll("/", "-")]), {
+                ApiResponse<ActionsResponse<GPonOnusDBMInterface[]>>
+            >(route("app.onu-names"), {
                 params: {
                     search,
                 },
             });
 
             if (response.data) {
-                return response.data.data;
+                return response.data.data.data;
             }
 
             return null;
@@ -72,7 +68,7 @@ export function SelectOnuNames({
                 queryKey: ["onu-names"],
             });
         },
-        [value, port, equipament]
+        [value]
     );
 
     return (

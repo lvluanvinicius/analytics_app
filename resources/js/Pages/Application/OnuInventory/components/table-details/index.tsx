@@ -12,6 +12,7 @@ import { ActionsResponse } from "@/types/api";
 import { application } from "@/services/app";
 import { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
+import { TableDetailRowSkeleton } from "./table-row-skeleton";
 
 // table-details.tsx
 export function TableDetails() {
@@ -61,31 +62,47 @@ export function TableDetails() {
         [url]
     );
 
-    if (!onuNames) {
-        return null;
-    }
-
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="whitespace-nowrap">NAME</TableHead>
-                    <TableHead className="whitespace-nowrap">SERIAL</TableHead>
-                    <TableHead className="whitespace-nowrap">DEVICE</TableHead>
-                    <TableHead className="whitespace-nowrap">PORT</TableHead>
-                    <TableHead className="whitespace-nowrap">RXDBM</TableHead>
-                    <TableHead className="whitespace-nowrap">TXDBM</TableHead>
-                    <TableHead className="whitespace-nowrap">
-                        COLLECTION_DATE
-                    </TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {onuNames &&
-                    onuNames.map(function (data, index) {
-                        return <TableDetailRow key={index} data={data} />;
-                    })}
-            </TableBody>
-        </Table>
+        <div className="bg-sidebar !rounded-md border px-6 py-4">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="whitespace-nowrap">
+                            NAME
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap">
+                            SERIAL
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap">
+                            DEVICE
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap">
+                            PORT
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap">
+                            RXDBM
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap">
+                            TXDBM
+                        </TableHead>
+                        <TableHead className="whitespace-nowrap">
+                            COLLECTION_DATE
+                        </TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {onuNames
+                        ? onuNames.map(function (data, index) {
+                              return <TableDetailRow key={index} data={data} />;
+                          })
+                        : [
+                              0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+                              15, 16, 17, 18, 19, 20,
+                          ].map(function (_, index) {
+                              return <TableDetailRowSkeleton />;
+                          })}
+                </TableBody>
+            </Table>
+        </div>
     );
 }

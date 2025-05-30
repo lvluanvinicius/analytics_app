@@ -19,7 +19,7 @@ class OnuInventoryController extends Controller
 
             if (! $request->has('timeFrom')) {
                 $currentDate    = new \DateTime();
-                $timeFromString = $currentDate->modify('-3hour')->format('Y-m-d H:i:s');
+                $timeFromString = $currentDate->modify('-3hours')->format('Y-m-d H:i:s');
             } else {
                 $timeFromString = str_replace('_', ':', $request->timeFrom);
             }
@@ -58,7 +58,6 @@ class OnuInventoryController extends Controller
             }
             return Inertia::render('Application/OnuInventory/Index', ['records' => $records]);
         } catch (\Exception $error) {
-            dd($error);
             return to_route('app.onu-nventory')->with([
                 "error" => $error->getMessage(),
             ]);

@@ -43,7 +43,7 @@ export function GraphOnuDBM({
 }) {
     if (collections.length <= 0) {
         return (
-            <Card className="w-full mx-auto">
+            <Card className="w-full mx-auto !rounded-md bg-sidebar">
                 <CardHeader>
                     <CardTitle>Histórico e DBM</CardTitle>
                     <CardDescription></CardDescription>
@@ -58,7 +58,7 @@ export function GraphOnuDBM({
     }
 
     return (
-        <Card className="w-full mx-auto">
+        <Card className="w-full mx-auto !rounded-md bg-sidebar">
             <CardHeader>
                 <CardTitle>Histórico e DBM</CardTitle>
                 <CardDescription></CardDescription>

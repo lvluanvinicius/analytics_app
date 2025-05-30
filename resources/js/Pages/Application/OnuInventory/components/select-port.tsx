@@ -14,13 +14,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export function SelectPort({
-    equipament,
     value,
     changeValue,
     className,
     loadData,
 }: {
-    equipament: string;
     value: string;
     changeValue: (value: string) => void;
     className?: string;
@@ -37,7 +35,7 @@ export function SelectPort({
         queryFn: async function () {
             const response = await application.get<
                 ActionsResponse<EquipamentPortInterface[]>
-            >(`/equipament/${equipament}/ports`, {
+            >(`/equipament/ports/json`, {
                 params: {
                     search,
                 },
@@ -54,7 +52,7 @@ export function SelectPort({
 
     async function handleSelect(item: string) {
         if (ports) {
-            const it = ports.find((c) => c.port === item);
+            const it = ports.find((c) => c.PORT === item);
 
             if (it) {
                 setSelected(it);
@@ -84,7 +82,7 @@ export function SelectPort({
                     {value
                         ? value
                         : selected
-                        ? selected.port
+                        ? selected.PORT
                         : "Selecione uma porta"}
                 </Button>
             </PopoverTrigger>
@@ -108,18 +106,18 @@ export function SelectPort({
                             </div>
                         )}
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 overflow-auto max-h-[40vh] pr-4">
                             {ports &&
                                 ports.map(function (port, index) {
                                     return (
                                         <div
                                             key={index}
                                             onClick={() =>
-                                                handleSelect(port.port)
+                                                handleSelect(port.PORT)
                                             }
                                             className="flex w-full cursor-pointer items-center rounded-md bg-secondary py-2 pl-4"
                                         >
-                                            {port.port}
+                                            {port.PORT}
                                         </div>
                                     );
                                 })}

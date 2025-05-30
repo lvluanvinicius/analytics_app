@@ -2,12 +2,15 @@ import { SelectEquipament } from "@/components/application/select-equipament";
 import { Button } from "@/components/ui/button";
 import { transformSearchParams } from "@/tools/urls";
 import { router, useForm, usePage } from "@inertiajs/react";
-import { FormEvent, useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { SelectPort } from "./select-port";
 import { SelectOnuNames } from "./select-onu-names";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function FiltersGet() {
     const { url } = usePage();
+
+    const [processing, setProcessing] = useState(false);
 
     const { data, setData } = useForm({
         equipament: "",
@@ -29,7 +32,18 @@ export function FiltersGet() {
         setData("port", params.port as string);
         setData("onuName", params.onuName as string);
 
-        router.get(`${uri}?${transformSearchParams({ ...data })}`);
+        router.get(
+            `${uri}?${transformSearchParams({ ...data })}`,
+            {},
+            {
+                onBefore() {
+                    setProcessing(true);
+                },
+                onFinish() {
+                    setProcessing(false);
+                },
+            }
+        );
     };
 
     useEffect(function () {
@@ -54,30 +68,35 @@ export function FiltersGet() {
 
     return (
         <form
-            className="w-full p-4 grid grid-cols-3 gap-4 border !rounded-xl"
+            className="w-full p-4 grid grid-cols-3 gap-4 border !rounded-md bg-sidebar"
             onSubmit={handleSearch}
         >
-            <SelectEquipament
-                className="border h-9 col-span-3 xl:col-span-1"
-                value={data.equipament}
-                changeValue={(v) => setData("equipament", v)}
-            />
+            {processing ? (
+                <Skeleton className="h-9 w-full rounded-md border bg-background" />
+            ) : (
+                <SelectEquipament
+                    className="border h-9 col-span-3 xl:col-span-1"
+                    value={data.equipament}
+                    changeValue={(v) => setData("equipament", v)}
+                />
+            )}
 
-            {data.equipament && (
+            {processing ? (
+                <Skeleton className="h-9 w-full rounded-md border bg-background" />
+            ) : (
                 <SelectPort
                     className="border h-9 col-span-3 xl:col-span-1"
                     changeValue={(v) => setData("port", v)}
-                    equipament={data.equipament}
                     value={data.port}
                 />
             )}
 
-            {data.port && (
+            {processing ? (
+                <Skeleton className="h-9 w-full rounded-md border bg-background" />
+            ) : (
                 <SelectOnuNames
                     className="border h-9 col-span-3 xl:col-span-1"
                     changeValue={(v) => setData("onuName", v)}
-                    equipament={data.equipament}
-                    port={data.port}
                     value={data.onuName}
                 />
             )}
