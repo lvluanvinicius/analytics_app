@@ -13,7 +13,7 @@ export default function Ports({
     if (!ports) return null;
 
     return (
-        <AppPageHandler pageTitle="Equipamentos" widthTotal>
+        <AppPageHandler pageTitle="Portas" widthTotal>
             <div className="bg-sidebar p-8">
                 <div className="flex items-center gap-2 md:flex-1 mb-4">
                     <Search />

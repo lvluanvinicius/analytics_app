@@ -95,4 +95,39 @@ class Integration extends LaravelApiClass
             ];
         }
     }
+
+    /**
+     * Atualiza o perfil de um usuário.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $userToken
+     * @param string $userId
+     * @param array $data
+     * @throws \Exception
+     * @return array
+     */
+    public function updateProfile(string $userToken, array $data): array
+    {
+        try {
+            $this->setHeader('Authorization', "Bearer {$userToken}");
+            $response = $this->put("/api/applications/users", $data);
+
+            if ($this->getStatusCode() === 200 && isset($response['status'])) {
+                if ($response['status'] && isset($response['data'])) {
+                    $response['status_code'] = $this->getStatusCode();
+                    $response['error']       = null;
+                    $response['errors']      = null;
+                    return $response['data'];
+                }
+            }
+
+            throw new \Exception('Houve um erro durante sua solicitação. Por favor, tente novamente mais tarde.');
+        } catch (\Exception $e) {
+            return [
+                'status_code' => $this->getStatusCode(),
+                'error'       => $e->getMessage(),
+                'errors'      => null,
+            ];
+        }
+    }
 }

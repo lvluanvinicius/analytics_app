@@ -4,12 +4,16 @@ use App\Http\Controllers\Application\EquipamentController;
 use App\Http\Controllers\Application\OnuInventoryController;
 use App\Http\Controllers\Application\OnuNamesController;
 use App\Http\Controllers\Application\PortsController;
+use App\Http\Controllers\Application\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Middleware\Integration\Authenticated;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware([Authenticated::class])->prefix('app')->as('app.')->group(function () {
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
     Route::get('dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
