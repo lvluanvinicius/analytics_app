@@ -66,15 +66,17 @@ export function TablePaginate({ paginate }: TablePaginateProps) {
     };
 
     return (
-        <div className="w-full flex items-center justify-between">
-            <div />
+        <div className="w-full flex items-center justify-between md:flex-row flex-wrap gap-4 border-t-2 mt-4">
+            <div className="text-xs">
+                Página {paginate.current_page} de {totalPages} páginas
+            </div>
 
             <div className="flex items-center gap-1">
                 <Button
                     size={"icon"}
                     variant={"outline"}
                     onClick={() => handlePaginate("previous")}
-                    disabled={paginate.current_page == 1}
+                    disabled={paginate.current_page <= 1}
                 >
                     <ChevronLeft />
                 </Button>
@@ -83,7 +85,7 @@ export function TablePaginate({ paginate }: TablePaginateProps) {
                     size={"icon"}
                     variant={"outline"}
                     onClick={() => handlePaginate("first")}
-                    disabled={paginate.current_page == 1}
+                    disabled={paginate.current_page <= 1}
                 >
                     <ChevronFirst />
                 </Button>
@@ -96,10 +98,7 @@ export function TablePaginate({ paginate }: TablePaginateProps) {
                     size={"icon"}
                     variant={"outline"}
                     onClick={() => handlePaginate("last")}
-                    disabled={
-                        paginate.current_page == totalPages ||
-                        paginate.current_page <= 1
-                    }
+                    disabled={paginate.current_page >= totalPages}
                 >
                     <ChevronLast />
                 </Button>
@@ -108,10 +107,7 @@ export function TablePaginate({ paginate }: TablePaginateProps) {
                     size={"icon"}
                     variant={"outline"}
                     onClick={() => handlePaginate("next")}
-                    disabled={
-                        paginate.current_page == totalPages ||
-                        paginate.current_page <= 1
-                    }
+                    disabled={paginate.current_page == totalPages}
                 >
                     <ChevronRight />
                 </Button>

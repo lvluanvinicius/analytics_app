@@ -3,12 +3,14 @@ import { ReactNode } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CircleCheck } from "lucide-react";
 import DefaultLayout from "@/Layouts/admin";
+import { cn } from "@/lib/utils";
 
 interface ClientPageHandlerProps {
     heading?: string;
     pageTitle?: string;
     actions?: ReactNode;
     children: ReactNode;
+    widthTotal?: boolean;
 }
 
 export default function AppPageHandler({
@@ -16,6 +18,7 @@ export default function AppPageHandler({
     pageTitle,
     actions,
     children,
+    widthTotal,
 }: ClientPageHandlerProps) {
     const { flash } = usePage().props;
     const responseMessage = flash as {
@@ -27,7 +30,12 @@ export default function AppPageHandler({
         <>
             <DefaultLayout pageTitle={pageTitle}>
                 <div className="mt-4 w-full flex justify-center max-w-[95vw]">
-                    <div className="w-full md:max-w-[70vw]">
+                    <div
+                        className={cn(
+                            "w-full md:max-w-[70vw]",
+                            widthTotal && "md:!max-w-[100%]"
+                        )}
+                    >
                         {responseMessage && (
                             <>
                                 {responseMessage.error && (

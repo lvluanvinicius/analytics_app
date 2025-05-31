@@ -130,7 +130,7 @@ export function GraphOnuDBM({
                             <ChartTooltip
                                 cursor={false}
                                 content={
-                                    <ChartTooltipContent indicator="line" />
+                                    <ChartTooltipContent indicator="dashed" />
                                 }
                             />
                             <Area

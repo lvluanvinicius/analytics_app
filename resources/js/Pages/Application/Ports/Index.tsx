@@ -1,16 +1,16 @@
-import { TableEquipaments } from "./components/table-equipaments";
+import { TableEquipamentPorts } from "./components/table-ports";
 import { ApiResponse } from "@/types/api";
-import { EquipamentInterface } from "@/types/equipament";
 import { TablePaginate } from "@/components/application/table-paginate";
 import { Search } from "@/components/application/search";
 import AppPageHandler from "@/components/application/_page_handler";
+import { EquipamentPortInterface } from "@/types/equipament-port";
 
-export default function Equipaments({
-    equipaments,
+export default function Ports({
+    ports,
 }: {
-    equipaments: ApiResponse<EquipamentInterface[]>;
+    ports: ApiResponse<EquipamentPortInterface[]>;
 }) {
-    if (!equipaments) return null;
+    if (!ports) return null;
 
     return (
         <AppPageHandler pageTitle="Equipamentos" widthTotal>
@@ -19,9 +19,9 @@ export default function Equipaments({
                     <Search />
                 </div>
 
-                <TableEquipaments equipaments={equipaments.data} />
+                <TableEquipamentPorts ports={ports.data} />
 
-                <TablePaginate paginate={equipaments} />
+                <TablePaginate paginate={ports} />
             </div>
         </AppPageHandler>
     );

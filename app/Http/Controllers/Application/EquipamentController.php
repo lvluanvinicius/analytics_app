@@ -10,15 +10,38 @@ use Inertia\Response as InertiaResponse;
 
 class EquipamentController extends Controller
 {
-    public function index(): InertiaResponse
+    /**
+     * Retorna a listagem de equipamentos registrados na base pelo script de coletas.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     * @param \Illuminate\Http\Request $request
+     * @return \Inertia\Response
+     */
+    public function index(Request $request): InertiaResponse
     {
-        $equipaments = new Device();
+        $params = $request->only(['search']);
+        $query  = Device::query();
 
-        $records = $equipaments->paginate(10);
+        if (! empty($params['search'])) {
+            $search = $params['search'];
+            $query->whereRaw([
+                'DEVICE' => [
+                    '$regex' => ".*$search*.",
+                ],
+            ]);
+        }
+
+        $records = $query->paginate(10);
 
         return Inertia::render('Application/Equipaments/Index', ['equipaments' => $records]);
     }
 
+    /**
+     * Efetua uma busca de equipamentos vis JSON.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return JsonResponse
+     */
     public function indexJson(Request $request): JsonResponse
     {
         try {
@@ -29,10 +52,12 @@ class EquipamentController extends Controller
 
             // Busca Global
             if (! empty($params['search'])) {
-                $search = '%' . strtolower($params['search']) . '%';
-                $fields = array_key_exists('fields', $params) ? explode(',', $params['fields']) : [];
-
-                $this->applyGlobalSearch($query, $search, $fields);
+                $search = $params['search'];
+                $query->whereRaw([
+                    'DEVICE' => [
+                        '$regex' => ".*$search*.",
+                    ],
+                ]);
             }
 
             $equipaments = $query->paginate(10);

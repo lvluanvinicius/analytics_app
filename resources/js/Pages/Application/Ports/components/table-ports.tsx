@@ -5,14 +5,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { TableEquipamentRow } from "./table-equipament-row";
-import { EquipamentInterface } from "@/types/equipament";
+import { TableEquipamentPortsRow } from "./table-port-row";
+import { EquipamentPortInterface } from "@/types/equipament-port";
 
 interface TableEquipamentsProps {
-    equipaments: EquipamentInterface[];
+    ports: EquipamentPortInterface[];
 }
 
-export function TableEquipaments({ equipaments }: TableEquipamentsProps) {
+export function TableEquipamentPorts({ ports }: TableEquipamentsProps) {
     return (
         <Table>
             <TableHeader>
@@ -22,8 +22,8 @@ export function TableEquipaments({ equipaments }: TableEquipamentsProps) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {equipaments.map(function (data, index) {
-                    return <TableEquipamentRow key={index} data={data} />;
+                {ports.map(function (data, index) {
+                    return <TableEquipamentPortsRow key={index} data={data} />;
                 })}
             </TableBody>
         </Table>

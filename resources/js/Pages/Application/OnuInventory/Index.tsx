@@ -11,7 +11,7 @@ export default function OnuInventory({
 }) {
     return (
         <DefaultLayout pageTitle="ONU Inventory">
-            <div className="flex flex-col gap-4 ">
+            <div className="flex flex-col gap-4">
                 <FiltersGet />
                 <GraphOnuDBM collections={records} />
                 <TableDetails />

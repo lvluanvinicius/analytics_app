@@ -5,25 +5,52 @@ use App\Http\Controllers\Controller;
 use App\Models\MongoDB\Port;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Response as InertiaResponse;
 
 class PortsController extends Controller
 {
+    /**
+     * Retorna a listagem de portas coletas pelo script.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return InertiaResponse|\Inertia\ResponseFactory
+     */
+    public function index(Request $request): InertiaResponse
+    {
+        $params = $request->only(['search']);
+        $query  = Port::query();
+
+        if (! empty($params['search'])) {
+            $search = $params['search'];
+            $query->whereRaw([
+                'PORT' => [
+                    '$regex' => ".*$search*.",
+                ],
+            ]);
+        }
+
+        $records = $query->paginate(10);
+
+        return inertia('Application/Ports/Index', ['ports' => $records]);
+    }
 
     public function ports(Request $request): JsonResponse
     {
         try {
 
-            $params           = $request->only(['search']);
-            $params['fields'] = "id,PORT";
+            $params = $request->only(['search']);
 
             $query = Port::query();
 
             // Busca Global
             if (! empty($params['search'])) {
-                $search = '%' . strtolower($params['search']) . '%';
-                $fields = array_key_exists('fields', $params) ? explode(',', $params['fields']) : [];
-
-                $this->applyGlobalSearch($query, $search, $fields);
+                $search = $params['search'];
+                $query->whereRaw([
+                    'PORT' => [
+                        '$regex' => ".*$search*.",
+                    ],
+                ]);
             }
 
             $data = $query->get();

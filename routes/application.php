@@ -22,6 +22,8 @@ Route::middleware([Authenticated::class])->prefix('app')->as('app.')->group(func
 
     Route::resource('equipaments', EquipamentController::class);
 
+    Route::resource('ports', PortsController::class);
+
     Route::get('onu-names/json', [OnuNamesController::class, 'indexJson'])->name('onu-names');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

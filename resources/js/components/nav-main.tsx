@@ -18,6 +18,7 @@ import {
     SidebarMenuSubButton,
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { Link } from "@inertiajs/react";
 
 export function NavMain({
     items,
@@ -47,10 +48,10 @@ export function NavMain({
                     >
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild tooltip={item.title}>
-                                <a href={item.url}>
+                                <Link href={item.url}>
                                     <item.icon />
                                     <span>{item.title}</span>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                             {item.items?.length ? (
                                 <>
@@ -71,11 +72,13 @@ export function NavMain({
                                                     <SidebarMenuSubButton
                                                         asChild
                                                     >
-                                                        <a href={subItem.url}>
+                                                        <Link
+                                                            href={subItem.url}
+                                                        >
                                                             <span>
                                                                 {subItem.title}
                                                             </span>
-                                                        </a>
+                                                        </Link>
                                                     </SidebarMenuSubButton>
                                                 </SidebarMenuSubItem>
                                             ))}

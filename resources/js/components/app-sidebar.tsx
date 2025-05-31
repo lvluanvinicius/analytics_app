@@ -1,5 +1,10 @@
 import * as React from "react";
-import { Command, SquareTerminal } from "lucide-react";
+import {
+    BetweenHorizonalEnd,
+    ChartNoAxesColumn,
+    Command,
+    SquareTerminal,
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -33,20 +38,21 @@ const data = {
                 },
             ],
         },
-
         {
-            title: "Equipamentos",
+            title: "Dados Auxiliares",
             url: "#",
-            icon: SquareTerminal,
+            icon: BetweenHorizonalEnd,
             isActive: true,
             items: [
                 {
-                    title: "Listar",
+                    title: "Equipamentos",
                     url: route("app.equipaments.index"),
+                    isActive: false,
                 },
                 {
-                    title: "Adicionar",
-                    url: route("app.equipaments.create"),
+                    title: "Portas",
+                    url: route("app.ports.index"),
+                    isActive: false,
                 },
             ],
         },
