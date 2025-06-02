@@ -5,7 +5,7 @@ use App\Http\Controllers\Application\OnuInventoryController;
 use App\Http\Controllers\Application\OnuNamesController;
 use App\Http\Controllers\Application\PortsController;
 use App\Http\Controllers\Application\ProfileController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Integration\SignOutController;
 use App\Http\Middleware\Integration\Authenticated;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,5 +30,5 @@ Route::middleware([Authenticated::class])->prefix('app')->as('app.')->group(func
 
     Route::get('onu-names/json', [OnuNamesController::class, 'indexJson'])->name('onu-names');
 
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::delete('logout', [SignOutController::class, 'destroy'])->name('logout');
 });

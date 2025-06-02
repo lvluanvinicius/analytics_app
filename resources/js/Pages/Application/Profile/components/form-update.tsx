@@ -13,7 +13,6 @@ export function FormUpdate({ user }: { user: User }) {
         email: user.email,
         password: "",
     });
-    console.log(route("app.profile.update", [user.id]));
 
     function submit(e: React.FormEvent) {
         e.preventDefault();

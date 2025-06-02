@@ -39,6 +39,25 @@ class Integration extends LaravelApiClass
     }
 
     /**
+     * Efetua o logout na API.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param string $userToken
+     * @return array{error: null, response: array, status_code: int|null|array{error: string, errors: array, status_code: int|null}}
+     */
+    public function signOut(string $userToken): array
+    {
+        $this->setHeader('Authorization', "Bearer {$userToken}");
+        $response = $this->post('/api/app/sign-out');
+
+        return [
+            'status_code' => $this->getStatusCode(),
+            'response'    => $response,
+            'error'       => null,
+        ];
+    }
+
+    /**
      * Valida se a sessão está ativa.
      * @author Luan Santos <lvluansantos@gmail.com>
      *
@@ -110,14 +129,14 @@ class Integration extends LaravelApiClass
     {
         try {
             $this->setHeader('Authorization', "Bearer {$userToken}");
-            $response = $this->put("/api/applications/users", $data);
+            $response = $this->put("/api/app/profile", $data);
 
             if ($this->getStatusCode() === 200 && isset($response['status'])) {
                 if ($response['status'] && isset($response['data'])) {
                     $response['status_code'] = $this->getStatusCode();
                     $response['error']       = null;
                     $response['errors']      = null;
-                    return $response['data'];
+                    return $response;
                 }
             }
 

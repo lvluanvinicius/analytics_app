@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
+    /**
+     * Retorna o display de perfil do usuário.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Inertia\Response|\Inertia\ResponseFactory
+     */
     public function index(Request $request)
     {
         $data = $request->user();
@@ -17,6 +24,14 @@ class ProfileController extends Controller
         ]);
     }
 
+    /**
+     * Atualiza os dados do usuário logado.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @throws \Exception
+     * @return RedirectResponse
+     */
     public function update(Request $request): RedirectResponse
     {
         try {
@@ -46,7 +61,7 @@ class ProfileController extends Controller
 
             if (isset($update['status_code']) && $update['status_code'] == 200) {
                 return to_route('app.profile.index')->with([
-                    'success' => $update,
+                    'success' => $update['message'],
                 ]);
             }
 

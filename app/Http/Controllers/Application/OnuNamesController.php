@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class OnuNamesController extends Controller
 {
+    /**
+     * Retorna os nomes de clientes.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     * @param \Illuminate\Http\Request $request
+     * @return JsonResponse
+     */
     public function indexJson(Request $request): JsonResponse
     {
         try {

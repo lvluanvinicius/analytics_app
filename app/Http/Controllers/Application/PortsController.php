@@ -35,6 +35,12 @@ class PortsController extends Controller
         return inertia('Application/Ports/Index', ['ports' => $records]);
     }
 
+    /**
+     * Retorna as portas no formato JSON.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     * @param \Illuminate\Http\Request $request
+     * @return JsonResponse
+     */
     public function ports(Request $request): JsonResponse
     {
         try {

@@ -1,5 +1,11 @@
-import { Form } from './form';
+import { Head } from "@inertiajs/react";
+import { Form } from "./form";
 
 export default function Index({ flash }: { flash: { error: null | string } }) {
-    return <Form error={flash.error} />;
+    return (
+        <>
+            <Head title="Login" />
+            <Form error={flash.error} />
+        </>
+    );
 }

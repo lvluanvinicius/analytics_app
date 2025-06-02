@@ -11,6 +11,13 @@ use Inertia\Response as InertiaResponse;
 
 class OnuInventoryController extends Controller
 {
+    /**
+     * Retorna o display de exibição de dadps coletados.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return RedirectResponse|\Inertia\Response
+     */
     public function index(Request $request): InertiaResponse | RedirectResponse
     {
         try {
@@ -64,6 +71,13 @@ class OnuInventoryController extends Controller
         }
     }
 
+    /**
+     * Retorna uma relação de dados de uma porta específica.
+     * @author Luan Santos <lvluansantos@gmail.com>
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function inventoryData(Request $request)
     {
         try {
