@@ -7,6 +7,7 @@ ARG APP_URL=http://localhost
 ARG FRONTEND_URL=http://localhost
 ARG APP_ENV=production
 ARG APP_DEBUG=false
+ARG APP_NAME=LARAVEL
 
 # Variáveis de ambiente
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -14,7 +15,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     FRONTEND_URL=${FRONTEND_URL} \
     APP_ENV=${APP_ENV} \
     APP_DEBUG=${APP_DEBUG} \
-    GIT_VERSION=${GIT_VERSION}
+    GIT_VERSION=${GIT_VERSION}\
+    APP_NAME=${APP_NAME}
 
 # 1. Instalação de dependências de sistema
 RUN apt-get update && apt-get install -y \
@@ -49,7 +51,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sSL https://packages.sury.org/php/README.txt | bash -x && \
     apt-get update && \
     apt-get install -y php8.4 php8.4-fpm php8.4-cli php8.4-mysql php8.4-xml php8.4-mbstring \
-    php8.4-curl php8.4-zip php8.4-gd php8.4-imagick php8.4-bcmath php8.4-intl php8.4-mongodb  \
+    php8.4-curl php8.4-zip php8.4-gd php8.4-imagick php8.4-bcmath php8.4-intl php8.4-mongodb \
     php8.4-pgsql php8.4-redis && \
     apt-get clean
 
@@ -86,11 +88,11 @@ RUN cp .env.example .env
 # 9. Ajusta variáveis de ambiente no .env
 RUN sed -i "s|^APP_URL=.*|APP_URL=${APP_URL}|" .env \
  && sed -i "s|^APP_ENV=.*|APP_ENV=${APP_ENV}|" .env \
- && sed -i "s|^APP_DEBUG=.*|APP_DEBUG=${APP_DEBUG}|" .env
+ && sed -i "s|^APP_DEBUG=.*|APP_DEBUG=${APP_DEBUG}|" .env \
+ && sed -i "s|^APP_NAME=.*|APP_NAME=${APP_NAME}|" .env
 
 # Instalando dependências.
 RUN npm install --force
-
 
 # 10. Instala dependências do Laravel
 RUN composer install --optimize-autoloader --no-dev
